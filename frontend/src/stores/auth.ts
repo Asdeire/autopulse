@@ -1,0 +1,52 @@
+import { defineStore } from 'pinia'
+import { STORAGE_KEYS } from '../constants/storage'
+import type { AuthState } from '../types/auth'
+import * as authApi from '../services/auth.api'
+import { getApiErrorInfo } from '../services/api-errors'
+import { storageGetJson, storageRemove, storageSetJson } from '../utils/storage'
+
+const defaultState: AuthState = {
+  token: null,
+  userEmail: null,
+}
+
+export const useAuthStore = defineStore('auth', {
+  state: (): AuthState => ({ ...defaultState }),
+  getters: {
+    isAuthenticated: (state) => Boolean(state.token),
+  },
+  actions: {
+    hydrateFromStorage() {
+      const stored = storageGetJson<AuthState>(STORAGE_KEYS.auth)
+      if (!stored) return
+      this.token = stored.token ?? null
+      this.userEmail = stored.userEmail ?? null
+    },
+    setAuth(payload: { token: string; userEmail?: string | null }) {
+      this.token = payload.token
+      this.userEmail = payload.userEmail ?? null
+      storageSetJson(STORAGE_KEYS.auth, { token: this.token, userEmail: this.userEmail })
+    },
+    async login(input: { email: string; password: string }) {
+      try {
+        const res = await authApi.login(input)
+        this.setAuth({ token: res.token, userEmail: res.user.email })
+      } catch (e) {
+        throw new Error(getApiErrorInfo(e).message)
+      }
+    },
+    async register(input: { email: string; password: string }) {
+      try {
+        const res = await authApi.register(input)
+        this.setAuth({ token: res.token, userEmail: res.user.email })
+      } catch (e) {
+        throw new Error(getApiErrorInfo(e).message)
+      }
+    },
+    logout() {
+      Object.assign(this, defaultState)
+      storageRemove(STORAGE_KEYS.auth)
+    },
+  },
+})
+
