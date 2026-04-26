@@ -17,6 +17,7 @@ export type Product = {
   price: number
   categoryId: number
   category: ProductCategory
+  isCompatible: boolean | null
 }
 
 export type ProductsQuery = {
@@ -24,5 +25,8 @@ export type ProductsQuery = {
   brand?: string
   search?: string
   sortBy?: 'price_asc' | 'price_desc'
+  vehicleSpecId?: number
+  usePrimaryVehicle?: boolean
+  onlyCompatible?: boolean
 }
 

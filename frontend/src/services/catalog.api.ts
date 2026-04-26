@@ -11,8 +11,8 @@ export async function getProducts(query: ProductsQuery = {}) {
   return res.data
 }
 
-export async function getProductById(id: number) {
-  const res = await http.get<Product>(`/products/${id}`)
+export async function getProductById(id: number, query?: Pick<ProductsQuery, 'vehicleSpecId' | 'usePrimaryVehicle'>) {
+  const res = await http.get<Product>(`/products/${id}`, { params: query })
   return res.data
 }
 

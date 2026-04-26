@@ -1,19 +1,88 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import BaseBadge from '../components/ui/BaseBadge.vue'
 import BaseButton from '../components/ui/BaseButton.vue'
 import BaseCard from '../components/ui/BaseCard.vue'
+import BaseInput from '../components/ui/BaseInput.vue'
 import { useAuthStore } from '../stores/auth'
+import { useGarageStore } from '../stores/garage'
 
 const router = useRouter()
 const auth = useAuthStore()
+const garage = useGarageStore()
 
 const userEmail = computed(() => auth.userEmail || 'Невідомий користувач')
+const addError = ref<string | null>(null)
+
+const selectedMakeId = ref('')
+const selectedModelId = ref('')
+const selectedYear = ref('')
+const selectedSpecId = ref('')
+const nickname = ref('')
+
+const availableYears = computed(() => {
+  const now = new Date().getFullYear()
+  const years: number[] = []
+  for (let y = now; y >= 1990; y -= 1) years.push(y)
+  return years
+})
 
 async function onLogout() {
   auth.logout()
   await router.push('/login')
 }
+
+async function onAddVehicle() {
+  addError.value = null
+  if (!selectedSpecId.value) {
+    addError.value = 'Оберіть конкретну модифікацію авто'
+    return
+  }
+
+  try {
+    await garage.addMyVehicle({
+      vehicleSpecId: Number(selectedSpecId.value),
+      nickname: nickname.value.trim() || undefined,
+      isPrimary: garage.vehicles.length === 0,
+    })
+    nickname.value = ''
+    selectedSpecId.value = ''
+  } catch {
+    addError.value = garage.error || 'Не вдалося додати авто'
+  }
+}
+
+async function onSetPrimary(id: number) {
+  await garage.makePrimary(id)
+}
+
+async function onDeleteVehicle(id: number) {
+  await garage.removeMyVehicle(id)
+}
+
+watch(selectedMakeId, async (newValue) => {
+  selectedModelId.value = ''
+  selectedSpecId.value = ''
+  garage.models = []
+  garage.specs = []
+  if (!newValue) return
+  await garage.fetchModels(Number(newValue))
+})
+
+watch([selectedModelId, selectedYear], async ([modelId, year]) => {
+  selectedSpecId.value = ''
+  garage.specs = []
+  if (!modelId) return
+  await garage.fetchSpecs({
+    modelId: Number(modelId),
+    year: year ? Number(year) : undefined,
+  })
+})
+
+onMounted(async () => {
+  await Promise.all([garage.fetchMakes(), garage.fetchMyVehicles()])
+})
 </script>
 
 <template>
@@ -29,9 +98,85 @@ async function onLogout() {
           <div class="text-sm text-neutral-500">Email</div>
           <div class="text-lg font-semibold text-neutral-900">{{ userEmail }}</div>
         </div>
+        <div class="text-sm text-neutral-500">
+          Основне авто:
+          <span class="font-semibold text-neutral-900">
+            {{ garage.primaryVehicle?.vehicleSpec.normalizedName || 'не обрано' }}
+          </span>
+        </div>
 
         <div class="pt-3 border-t border-neutral-200">
           <BaseButton variant="danger" @click="onLogout">Вийти з акаунта</BaseButton>
+        </div>
+      </div>
+    </BaseCard>
+
+    <BaseCard>
+      <div class="grid gap-4">
+        <h3 class="text-lg font-bold text-neutral-900">Мій гараж</h3>
+
+        <div v-if="garage.error" class="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">
+          {{ garage.error }}
+        </div>
+
+        <div class="grid gap-3 md:grid-cols-2">
+          <label class="block">
+            <span class="block text-sm font-semibold text-neutral-800 mb-1">Марка</span>
+            <select v-model="selectedMakeId" class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900">
+              <option value="">Оберіть марку</option>
+              <option v-for="make in garage.makes" :key="make.id" :value="String(make.id)">{{ make.name }}</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="block text-sm font-semibold text-neutral-800 mb-1">Модель</span>
+            <select v-model="selectedModelId" class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900" :disabled="!selectedMakeId">
+              <option value="">Оберіть модель</option>
+              <option v-for="model in garage.models" :key="model.id" :value="String(model.id)">{{ model.name }}</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="block text-sm font-semibold text-neutral-800 mb-1">Рік</span>
+            <select v-model="selectedYear" class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900">
+              <option value="">Будь-який рік</option>
+              <option v-for="year in availableYears" :key="year" :value="String(year)">{{ year }}</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="block text-sm font-semibold text-neutral-800 mb-1">Двигун/модифікація</span>
+            <select v-model="selectedSpecId" class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900" :disabled="!selectedModelId">
+              <option value="">Оберіть авто</option>
+              <option v-for="spec in garage.specs" :key="spec.id" :value="String(spec.id)">
+                {{ spec.normalizedName }}
+              </option>
+            </select>
+          </label>
+        </div>
+
+        <BaseInput v-model="nickname" label="Нотатка (опційно)" placeholder="Напр. Сімейне авто" />
+
+        <div v-if="addError" class="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{{ addError }}</div>
+
+        <div>
+          <BaseButton variant="primary" :loading="garage.loading" @click="onAddVehicle">Додати авто</BaseButton>
+        </div>
+
+        <div class="pt-4 border-t border-neutral-200 grid gap-3">
+          <div v-if="!garage.vehicles.length" class="text-sm text-neutral-500">У вас ще немає авто в гаражі.</div>
+          <div v-for="vehicle in garage.vehicles" :key="vehicle.id" class="rounded-md border border-neutral-200 p-3">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div class="font-semibold text-neutral-900">
+                  {{ vehicle.nickname || vehicle.vehicleSpec.normalizedName }}
+                </div>
+                <div class="text-sm text-neutral-500">{{ vehicle.vehicleSpec.normalizedName }}</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <BaseBadge v-if="vehicle.isPrimary" variant="neutral">Основне</BaseBadge>
+                <BaseButton v-else variant="ghost" size="sm" @click="onSetPrimary(vehicle.id)">Зробити основним</BaseButton>
+                <BaseButton variant="ghost" size="sm" @click="onDeleteVehicle(vehicle.id)">Видалити</BaseButton>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </BaseCard>

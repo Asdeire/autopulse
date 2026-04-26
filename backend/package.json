@@ -11,6 +11,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:seed": "prisma db seed",
+    "import:fitment": "ts-node-dev --transpile-only src/scripts/fitment-import.ts",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],

@@ -12,6 +12,7 @@ model User {
   email     String   @unique
   password  String
   orders    Order[]
+  vehicles  UserVehicle[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -34,11 +35,96 @@ model Product {
   categoryId  Int
   category    Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   orderItems  OrderItem[]
+  compatibility ProductCompatibility[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
   @@index([categoryId])
   @@index([brand])
+}
+
+model VehicleMake {
+  id        Int            @id @default(autoincrement())
+  name      String         @unique
+  models    VehicleModel[]
+  specs     VehicleSpec[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model VehicleModel {
+  id        Int             @id @default(autoincrement())
+  makeId    Int
+  make      VehicleMake     @relation(fields: [makeId], references: [id], onDelete: Restrict)
+  name      String
+  specs     VehicleSpec[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@unique([makeId, name])
+  @@index([makeId])
+}
+
+model VehicleEngine {
+  id        Int           @id @default(autoincrement())
+  code      String        @default("")
+  name      String
+  specs     VehicleSpec[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@unique([name, code])
+}
+
+model VehicleSpec {
+  id             Int                    @id @default(autoincrement())
+  makeId         Int
+  modelId        Int
+  engineId       Int
+  yearFrom       Int
+  yearTo         Int
+  normalizedName String
+  make           VehicleMake            @relation(fields: [makeId], references: [id], onDelete: Restrict)
+  model          VehicleModel           @relation(fields: [modelId], references: [id], onDelete: Restrict)
+  engine         VehicleEngine          @relation(fields: [engineId], references: [id], onDelete: Restrict)
+  userVehicles   UserVehicle[]
+  compatibility  ProductCompatibility[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@index([makeId, modelId, yearFrom, yearTo, engineId])
+  @@index([modelId, yearFrom, yearTo])
+  @@unique([modelId, engineId, yearFrom, yearTo])
+}
+
+model UserVehicle {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  vehicleSpecId Int
+  nickname      String?
+  isPrimary     Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicleSpec   VehicleSpec @relation(fields: [vehicleSpecId], references: [id], onDelete: Restrict)
+
+  @@index([userId, isPrimary])
+  @@index([vehicleSpecId])
+  @@unique([userId, vehicleSpecId])
+}
+
+model ProductCompatibility {
+  id            Int         @id @default(autoincrement())
+  productId     Int
+  vehicleSpecId Int
+  source        String      @default("UNKNOWN")
+  createdAt     DateTime    @default(now())
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  vehicleSpec   VehicleSpec @relation(fields: [vehicleSpecId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, vehicleSpecId])
+  @@index([vehicleSpecId])
+  @@index([productId, vehicleSpecId])
 }
 
 model Order {

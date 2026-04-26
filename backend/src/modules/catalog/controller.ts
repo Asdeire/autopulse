@@ -1,16 +1,43 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { getCategories, getProductById, getProducts } from "./service";
+import { getPrimaryVehicleSpecId } from "../garage/service";
 
 type GetProductsQuery = {
   categoryId?: number;
   brand?: string;
   search?: string;
   sortBy?: "price_asc" | "price_desc";
+  vehicleSpecId?: number;
+  usePrimaryVehicle?: boolean;
+  onlyCompatible?: boolean;
 };
 
 type GetProductByIdParams = {
   id: number;
 };
+
+type GetProductByIdQuery = {
+  vehicleSpecId?: number;
+  usePrimaryVehicle?: boolean;
+};
+
+async function resolveVehicleSpecId(
+  request: FastifyRequest<{ Querystring: { vehicleSpecId?: number; usePrimaryVehicle?: boolean } }>
+) {
+  if (request.query.vehicleSpecId !== undefined) {
+    return request.query.vehicleSpecId;
+  }
+  if (!request.query.usePrimaryVehicle) {
+    return undefined;
+  }
+
+  try {
+    await request.jwtVerify();
+    return getPrimaryVehicleSpecId(request.server, request.user.userId);
+  } catch {
+    return undefined;
+  }
+}
 
 export async function getCategoriesController(request: FastifyRequest) {
   return getCategories(request.server);
@@ -19,13 +46,23 @@ export async function getCategoriesController(request: FastifyRequest) {
 export async function getProductsController(
   request: FastifyRequest<{ Querystring: GetProductsQuery }>
 ) {
-  return getProducts(request.server, request.query);
+  const vehicleSpecId = await resolveVehicleSpecId(
+    request as FastifyRequest<{ Querystring: { vehicleSpecId?: number; usePrimaryVehicle?: boolean } }>
+  );
+
+  return getProducts(request.server, {
+    ...request.query,
+    vehicleSpecId
+  });
 }
 
 export async function getProductByIdController(
-  request: FastifyRequest<{ Params: GetProductByIdParams }>,
+  request: FastifyRequest<{ Params: GetProductByIdParams; Querystring: GetProductByIdQuery }>,
   reply: FastifyReply
 ) {
-  const product = await getProductById(request.server, request.params.id);
+  const vehicleSpecId = await resolveVehicleSpecId(
+    request as FastifyRequest<{ Querystring: { vehicleSpecId?: number; usePrimaryVehicle?: boolean } }>
+  );
+  const product = await getProductById(request.server, request.params.id, vehicleSpecId);
   return reply.send(product);
 }

@@ -2,6 +2,10 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+function toVehicleLabel(make: string, model: string, yearFrom: number, yearTo: number, engine: string) {
+  return `${make} ${model} ${yearFrom}-${yearTo} ${engine}`;
+}
+
 async function main() {
   await prisma.user.upsert({
     where: { email: "demo@autopulse.local" },
@@ -115,6 +119,120 @@ async function main() {
           categoryId: categoryByName.get(product.categoryName)!
         }
       })
+    )
+  );
+
+  const fitmentSpecs = [
+    {
+      make: "Toyota",
+      model: "Corolla",
+      yearFrom: 2014,
+      yearTo: 2018,
+      engineName: "1.6 бензин",
+      engineCode: "1ZR-FE"
+    },
+    {
+      make: "Volkswagen",
+      model: "Golf",
+      yearFrom: 2013,
+      yearTo: 2017,
+      engineName: "1.4 TSI",
+      engineCode: "CZCA"
+    },
+    {
+      make: "BMW",
+      model: "3 Series",
+      yearFrom: 2012,
+      yearTo: 2018,
+      engineName: "2.0 дизель",
+      engineCode: "N47D20"
+    }
+  ];
+
+  for (const spec of fitmentSpecs) {
+    const make = await prisma.vehicleMake.upsert({
+      where: { name: spec.make },
+      update: {},
+      create: { name: spec.make }
+    });
+
+    const model = await prisma.vehicleModel.upsert({
+      where: {
+        makeId_name: {
+          makeId: make.id,
+          name: spec.model
+        }
+      },
+      update: {},
+      create: {
+        makeId: make.id,
+        name: spec.model
+      }
+    });
+
+    const engine = await prisma.vehicleEngine.upsert({
+      where: {
+        name_code: {
+          name: spec.engineName,
+          code: spec.engineCode
+        }
+      },
+      update: {},
+      create: {
+        name: spec.engineName,
+        code: spec.engineCode
+      }
+    });
+
+    await prisma.vehicleSpec.upsert({
+      where: {
+        modelId_engineId_yearFrom_yearTo: {
+          modelId: model.id,
+          engineId: engine.id,
+          yearFrom: spec.yearFrom,
+          yearTo: spec.yearTo
+        }
+      },
+      update: {
+        makeId: make.id,
+        normalizedName: toVehicleLabel(spec.make, spec.model, spec.yearFrom, spec.yearTo, spec.engineName)
+      },
+      create: {
+        makeId: make.id,
+        modelId: model.id,
+        engineId: engine.id,
+        yearFrom: spec.yearFrom,
+        yearTo: spec.yearTo,
+        normalizedName: toVehicleLabel(spec.make, spec.model, spec.yearFrom, spec.yearTo, spec.engineName)
+      }
+    });
+  }
+
+  const allProductIds = await prisma.product.findMany({
+    select: { id: true }
+  });
+  const allVehicleSpecs = await prisma.vehicleSpec.findMany({
+    select: { id: true }
+  });
+
+  await Promise.all(
+    allProductIds.flatMap((product) =>
+      allVehicleSpecs.map((vehicleSpec) =>
+        prisma.productCompatibility.upsert({
+          where: {
+            productId_vehicleSpecId: {
+              productId: product.id,
+              vehicleSpecId: vehicleSpec.id
+            }
+          },
+          update: { source: "SEED" },
+          create: {
+            productId: product.id,
+            vehicleSpecId: vehicleSpec.id,
+            source: "SEED"
+          }
+        })
+      )
     )
   );
 }

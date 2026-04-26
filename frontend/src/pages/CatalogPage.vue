@@ -8,16 +8,19 @@ import BaseInput from '../components/ui/BaseInput.vue'
 import EmptyState from '../components/common/EmptyState.vue'
 import Loader from '../components/common/Loader.vue'
 import { useCatalogStore } from '../stores/catalog'
+import { useGarageStore } from '../stores/garage'
 import type { ProductsQuery } from '../types/catalog'
 
 const route = useRoute()
 const router = useRouter()
 const catalog = useCatalogStore()
+const garage = useGarageStore()
 
 const search = ref('')
 const brand = ref('')
 const categoryId = ref<string>('')
 const sortBy = ref<ProductsQuery['sortBy']>('price_asc')
+const onlyCompatible = ref(false)
 
 const normalizedQuery = computed<ProductsQuery>(() => {
   const q: ProductsQuery = {}
@@ -25,6 +28,8 @@ const normalizedQuery = computed<ProductsQuery>(() => {
   if (brand.value.trim()) q.brand = brand.value.trim()
   if (categoryId.value) q.categoryId = Number(categoryId.value)
   if (sortBy.value) q.sortBy = sortBy.value
+  if (onlyCompatible.value) q.onlyCompatible = true
+  q.usePrimaryVehicle = true
   return q
 })
 
@@ -33,6 +38,7 @@ function hydrateFromRoute() {
   search.value = typeof q.search === 'string' ? q.search : ''
   brand.value = typeof q.brand === 'string' ? q.brand : ''
   categoryId.value = typeof q.categoryId === 'string' ? q.categoryId : ''
+  onlyCompatible.value = q.onlyCompatible === 'true'
   sortBy.value =
     q.sortBy === 'price_desc' || q.sortBy === 'price_asc' ? (q.sortBy as ProductsQuery['sortBy']) : 'price_asc'
 }
@@ -43,7 +49,13 @@ async function refetch() {
 }
 
 async function applyFilters() {
-  await router.replace({ query: { ...normalizedQuery.value } })
+  await router.replace({
+    query: {
+      ...normalizedQuery.value,
+      usePrimaryVehicle: normalizedQuery.value.usePrimaryVehicle ? 'true' : undefined,
+      onlyCompatible: normalizedQuery.value.onlyCompatible ? 'true' : undefined,
+    },
+  })
 }
 
 function resetFilters() {
@@ -51,6 +63,7 @@ function resetFilters() {
   brand.value = ''
   categoryId.value = ''
   sortBy.value = 'price_asc'
+  onlyCompatible.value = false
   router.replace({ query: {} })
 }
 
@@ -64,7 +77,7 @@ watch(
 
 onMounted(async () => {
   hydrateFromRoute()
-  await Promise.all([catalog.fetchCategories(), refetch()])
+  await Promise.all([catalog.fetchCategories(), garage.fetchMyVehicles(), refetch()])
 })
 </script>
 
@@ -101,6 +114,17 @@ onMounted(async () => {
           </label>
         </div>
 
+        <div class="flex flex-wrap items-center gap-4">
+          <label class="inline-flex items-center gap-2 text-sm text-neutral-700">
+            <input v-model="onlyCompatible" type="checkbox" class="h-4 w-4 rounded border-neutral-300" />
+            Лише сумісні з моїм основним авто
+          </label>
+          <BaseBadge v-if="garage.primaryVehicle" variant="neutral">
+            Активне авто: {{ garage.primaryVehicle.vehicleSpec.normalizedName }}
+          </BaseBadge>
+          <BaseBadge v-else variant="neutral">Додайте основне авто в профілі для точного підбору</BaseBadge>
+        </div>
+
         <div class="flex flex-wrap items-center gap-2">
           <BaseButton variant="primary" @click="applyFilters">Застосувати</BaseButton>
           <BaseButton variant="ghost" @click="resetFilters">Скинути</BaseButton>
@@ -134,6 +158,9 @@ onMounted(async () => {
               <div class="text-sm text-neutral-500 truncate">{{ p.brand }} • {{ p.category.name }}</div>
             </div>
             <BaseBadge variant="neutral">{{ p.price }} ₴</BaseBadge>
+          </div>
+          <div v-if="p.isCompatible !== null" class="text-sm font-medium" :class="p.isCompatible ? 'text-emerald-700' : 'text-neutral-500'">
+            {{ p.isCompatible ? 'Сумісно з вашим авто' : 'Немає підтвердженої сумісності' }}
           </div>
 
           <RouterLink :to="`/products/${p.id}`" class="text-sm font-semibold text-neutral-900 hover:underline">

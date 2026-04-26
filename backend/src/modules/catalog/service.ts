@@ -6,6 +6,8 @@ type GetProductsQuery = {
   brand?: string;
   search?: string;
   sortBy?: "price_asc" | "price_desc";
+  vehicleSpecId?: number;
+  onlyCompatible?: boolean;
 };
 
 function buildOrderBy(sortBy?: "price_asc" | "price_desc"): Prisma.ProductOrderByWithRelationInput {
@@ -41,6 +43,14 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
     where.brand = query.brand;
   }
 
+  if (query.vehicleSpecId !== undefined && query.onlyCompatible) {
+    where.compatibility = {
+      some: {
+        vehicleSpecId: query.vehicleSpecId
+      }
+    };
+  }
+
   const products = await fastify.prisma.product.findMany({
     where,
     orderBy: buildOrderBy(query.sortBy),
@@ -57,17 +67,36 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
           id: true,
           name: true
         }
-      }
+      },
+      compatibility: query.vehicleSpecId
+        ? {
+            where: {
+              vehicleSpecId: query.vehicleSpecId
+            },
+            select: {
+              id: true
+            }
+          }
+        : false
     }
   });
 
+  const productsWithCompatibility = products.map((product) => {
+    const compatibilityEntries =
+      "compatibility" in product && Array.isArray(product.compatibility) ? product.compatibility : [];
+    return {
+      ...product,
+      isCompatible: query.vehicleSpecId ? compatibilityEntries.length > 0 : null
+    };
+  });
+
   if (!query.search) {
-    return products;
+    return productsWithCompatibility;
   }
 
   const normalizedSearch = query.search.trim().toLowerCase();
 
-  return products.filter((product) => {
+  return productsWithCompatibility.filter((product) => {
     return (
       product.title.toLowerCase().includes(normalizedSearch) ||
       product.description.toLowerCase().includes(normalizedSearch)
@@ -75,7 +104,7 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
   });
 }
 
-export async function getProductById(fastify: FastifyInstance, id: number) {
+export async function getProductById(fastify: FastifyInstance, id: number, vehicleSpecId?: number) {
   const product = await fastify.prisma.product.findUnique({
     where: { id },
     select: {
@@ -91,7 +120,17 @@ export async function getProductById(fastify: FastifyInstance, id: number) {
           id: true,
           name: true
         }
-      }
+      },
+      compatibility: vehicleSpecId
+        ? {
+            where: {
+              vehicleSpecId
+            },
+            select: {
+              id: true
+            }
+          }
+        : false
     }
   });
 
@@ -101,5 +140,11 @@ export async function getProductById(fastify: FastifyInstance, id: number) {
     throw error;
   }
 
-  return product;
+  const compatibilityEntries =
+    "compatibility" in product && Array.isArray(product.compatibility) ? product.compatibility : [];
+
+  return {
+    ...product,
+    isCompatible: vehicleSpecId ? compatibilityEntries.length > 0 : null
+  };
 }

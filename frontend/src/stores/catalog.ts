@@ -51,7 +51,10 @@ export const useCatalogStore = defineStore('catalog', {
       this.loading = true
       this.error = null
       try {
-        return await catalogApi.getProductById(id)
+        return await catalogApi.getProductById(id, {
+          vehicleSpecId: this.filters.vehicleSpecId,
+          usePrimaryVehicle: this.filters.usePrimaryVehicle,
+        })
       } catch (e) {
         this.error = getApiErrorInfo(e).message
         return null
