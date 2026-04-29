@@ -15,6 +15,7 @@ const garage = useGarageStore()
 
 const userEmail = computed(() => auth.userEmail || 'Невідомий користувач')
 const addError = ref<string | null>(null)
+const isAddingVehicle = ref(false)
 
 const selectedMakeId = ref('')
 const selectedModelId = ref('')
@@ -51,6 +52,7 @@ async function onAddVehicle() {
     return
   }
 
+  isAddingVehicle.value = true
   try {
     await garage.addMyVehicle({
       vehicleSpecId: Number(selectedSpecId.value),
@@ -61,6 +63,8 @@ async function onAddVehicle() {
     selectedSpecId.value = ''
   } catch {
     addError.value = garage.error || 'Не вдалося додати авто'
+  } finally {
+    isAddingVehicle.value = false
   }
 }
 
@@ -69,6 +73,8 @@ async function onSetPrimary(id: number) {
 }
 
 async function onDeleteVehicle(id: number) {
+  const confirmed = window.confirm('Ви дійсно хочете видалити це авто з гаража?')
+  if (!confirmed) return
   await garage.removeMyVehicle(id)
 }
 
@@ -175,7 +181,7 @@ onMounted(async () => {
         <div v-if="addError" class="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{{ addError }}</div>
 
         <div>
-          <BaseButton variant="primary" :loading="garage.loading" @click="onAddVehicle">Додати авто</BaseButton>
+          <BaseButton variant="primary" :loading="isAddingVehicle" @click="onAddVehicle">Додати авто</BaseButton>
         </div>
 
         <div class="pt-4 border-t border-neutral-200 grid gap-3">

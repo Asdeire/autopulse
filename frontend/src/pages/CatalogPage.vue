@@ -150,24 +150,39 @@ onMounted(async () => {
     </EmptyState>
 
     <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <BaseCard v-for="p in catalog.products" :key="p.id" class="h-full">
-        <div class="grid gap-3">
-          <div class="flex items-start justify-between gap-3">
-            <div class="min-w-0">
-              <div class="font-bold text-neutral-900 truncate">{{ p.title }}</div>
-              <div class="text-sm text-neutral-500 truncate">{{ p.brand }} • {{ p.category.name }}</div>
+      <RouterLink v-for="p in catalog.products" :key="p.id" :to="`/products/${p.id}`" class="block h-full">
+        <BaseCard hoverable class="h-full cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
+          <div class="grid gap-3">
+            <div class="relative overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100">
+              <img
+                v-if="p.imageUrl"
+                :src="p.imageUrl"
+                :alt="p.title"
+                class="h-40 w-full object-cover"
+              />
+              <div v-else class="grid h-40 place-items-center text-sm text-neutral-400">
+                Немає фото
+              </div>
+              <BaseBadge
+                v-if="p.isCompatible"
+                variant="neutral"
+                class="absolute left-2 top-2 border border-neutral-300 bg-white/90 px-2 py-0.5 text-[11px] leading-4 text-neutral-700 backdrop-blur"
+              >
+                Сумісно
+              </BaseBadge>
             </div>
-            <BaseBadge variant="neutral">{{ p.price }} ₴</BaseBadge>
-          </div>
-          <div v-if="p.isCompatible !== null" class="text-sm font-medium" :class="p.isCompatible ? 'text-emerald-700' : 'text-neutral-500'">
-            {{ p.isCompatible ? 'Сумісно з вашим авто' : 'Немає підтвердженої сумісності' }}
-          </div>
 
-          <RouterLink :to="`/products/${p.id}`" class="text-sm font-semibold text-neutral-900 hover:underline">
-            Детальніше →
-          </RouterLink>
-        </div>
-      </BaseCard>
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <div class="font-bold text-neutral-900 truncate">{{ p.title }}</div>
+                <div class="text-sm text-neutral-500 truncate">{{ p.brand }} • {{ p.category.name }}</div>
+              </div>
+              <BaseBadge variant="neutral">{{ p.price }} ₴</BaseBadge>
+            </div>
+
+          </div>
+        </BaseCard>
+      </RouterLink>
     </div>
   </div>
 </template>
