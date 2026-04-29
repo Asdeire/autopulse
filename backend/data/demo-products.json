@@ -1,0 +1,194 @@
+[
+  {
+    "title": "Toyota Corolla Oil Filter OF-101",
+    "description": "Spin-on oil filter for regular service intervals.",
+    "brand": "MANN-FILTER",
+    "imageUrl": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=80",
+    "price": 349,
+    "categoryName": "Filters"
+  },
+  {
+    "title": "Volkswagen Golf Air Filter AF-220",
+    "description": "Engine air filter for improved intake cleanliness.",
+    "brand": "Bosch",
+    "imageUrl": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1200&q=80",
+    "price": 499,
+    "categoryName": "Filters"
+  },
+  {
+    "title": "BMW 3 Series Cabin Filter CF-332",
+    "description": "Cabin pollen filter with activated carbon media.",
+    "brand": "MAHLE",
+    "imageUrl": "https://images.unsplash.com/photo-1625047509168-a7026f36de04?auto=format&fit=crop&w=1200&q=80",
+    "price": 579,
+    "categoryName": "Filters"
+  },
+  {
+    "title": "Audi A4 Fuel Filter FF-145",
+    "description": "Fuel filter cartridge for gasoline engines.",
+    "brand": "UFI",
+    "imageUrl": "https://images.unsplash.com/photo-1590511687524-7457c8f0f4f2?auto=format&fit=crop&w=1200&q=80",
+    "price": 629,
+    "categoryName": "Filters"
+  },
+  {
+    "title": "Ford Focus 5W-30 Synthetic Oil 4L",
+    "description": "Full synthetic engine oil for daily driving.",
+    "brand": "Castrol",
+    "imageUrl": "https://images.unsplash.com/photo-1621551122354-e96737d64b2f?auto=format&fit=crop&w=1200&q=80",
+    "price": 1349,
+    "categoryName": "Engine Oil"
+  },
+  {
+    "title": "Honda Civic 0W-20 Synthetic Oil 4L",
+    "description": "Low-friction synthetic oil for modern engines.",
+    "brand": "Mobil",
+    "imageUrl": "https://images.unsplash.com/photo-1608424524166-0f1a7aef4c5d?auto=format&fit=crop&w=1200&q=80",
+    "price": 1499,
+    "categoryName": "Engine Oil"
+  },
+  {
+    "title": "Skoda Octavia 5W-40 Synthetic Oil 4L",
+    "description": "High-temperature stable synthetic engine oil.",
+    "brand": "Liqui Moly",
+    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80",
+    "price": 1599,
+    "categoryName": "Engine Oil"
+  },
+  {
+    "title": "Mercedes C-Class 5W-30 LongLife Oil 5L",
+    "description": "Long drain interval synthetic oil for premium vehicles.",
+    "brand": "Shell",
+    "imageUrl": "https://images.unsplash.com/photo-1629236712170-f4b9b20f286d?auto=format&fit=crop&w=1200&q=80",
+    "price": 1899,
+    "categoryName": "Engine Oil"
+  },
+  {
+    "title": "Front Brake Pads BP-410 Ceramic",
+    "description": "Low-noise ceramic front brake pads set.",
+    "brand": "Brembo",
+    "imageUrl": "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1200&q=80",
+    "price": 1799,
+    "categoryName": "Brake System"
+  },
+  {
+    "title": "Rear Brake Pads BP-278",
+    "description": "Reliable rear brake pads for urban driving.",
+    "brand": "TRW",
+    "imageUrl": "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&w=1200&q=80",
+    "price": 1399,
+    "categoryName": "Brake System"
+  },
+  {
+    "title": "Front Brake Disc BD-330 Ventilated",
+    "description": "Ventilated brake discs with anti-corrosion coating.",
+    "brand": "ATE",
+    "imageUrl": "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1200&q=80",
+    "price": 2699,
+    "categoryName": "Brake System"
+  },
+  {
+    "title": "Rear Brake Disc BD-225 Solid",
+    "description": "Solid rear brake disc for balanced braking.",
+    "brand": "Zimmermann",
+    "imageUrl": "https://images.unsplash.com/photo-1599256635934-f288f16f6f3d?auto=format&fit=crop&w=1200&q=80",
+    "price": 2099,
+    "categoryName": "Brake System"
+  },
+  {
+    "title": "Spark Plug Iridium SP-11",
+    "description": "Iridium spark plug with long service life.",
+    "brand": "NGK",
+    "imageUrl": "https://images.unsplash.com/photo-1486754735734-325b5831c3ad?auto=format&fit=crop&w=1200&q=80",
+    "price": 289,
+    "categoryName": "Electronics"
+  },
+  {
+    "title": "Spark Plug Platinum SP-09",
+    "description": "Platinum spark plug for stable ignition.",
+    "brand": "Denso",
+    "imageUrl": "https://images.unsplash.com/photo-1630416439313-8f4a4f94a6b8?auto=format&fit=crop&w=1200&q=80",
+    "price": 259,
+    "categoryName": "Electronics"
+  },
+  {
+    "title": "AGM Battery 70Ah 760A",
+    "description": "Maintenance-free AGM battery for start-stop systems.",
+    "brand": "Varta",
+    "imageUrl": "https://images.unsplash.com/photo-1558423853-bb35f25733d8?auto=format&fit=crop&w=1200&q=80",
+    "price": 5699,
+    "categoryName": "Electronics"
+  },
+  {
+    "title": "EFB Battery 65Ah 650A",
+    "description": "Enhanced flooded battery for modern compact cars.",
+    "brand": "Bosch",
+    "imageUrl": "https://images.unsplash.com/photo-1574789784570-0fbd8e6f4fdf?auto=format&fit=crop&w=1200&q=80",
+    "price": 4599,
+    "categoryName": "Electronics"
+  },
+  {
+    "title": "Timing Belt Kit TBK-204",
+    "description": "Timing belt kit with tensioner and idler rollers.",
+    "brand": "Gates",
+    "imageUrl": "https://images.unsplash.com/photo-1517949908118-72149b3f2a68?auto=format&fit=crop&w=1200&q=80",
+    "price": 3299,
+    "categoryName": "Engine Parts"
+  },
+  {
+    "title": "Water Pump WP-560",
+    "description": "Engine water pump with high durability impeller.",
+    "brand": "SKF",
+    "imageUrl": "https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?auto=format&fit=crop&w=1200&q=80",
+    "price": 1899,
+    "categoryName": "Engine Parts"
+  },
+  {
+    "title": "Serpentine Belt SB-6PK1120",
+    "description": "Accessory drive belt for alternator and AC compressor.",
+    "brand": "Contitech",
+    "imageUrl": "https://images.unsplash.com/photo-1551830820-330a71b99659?auto=format&fit=crop&w=1200&q=80",
+    "price": 699,
+    "categoryName": "Engine Parts"
+  },
+  {
+    "title": "Thermostat Assembly TH-92C",
+    "description": "Coolant thermostat assembly with gasket.",
+    "brand": "Wahler",
+    "imageUrl": "https://images.unsplash.com/photo-1581093588401-16ec6d6df1f1?auto=format&fit=crop&w=1200&q=80",
+    "price": 899,
+    "categoryName": "Engine Parts"
+  },
+  {
+    "title": "Front Shock Absorber SA-Front-01",
+    "description": "Gas-filled front shock absorber for stable handling.",
+    "brand": "Sachs",
+    "imageUrl": "https://images.unsplash.com/photo-1593941707882-a5bac6861d75?auto=format&fit=crop&w=1200&q=80",
+    "price": 2399,
+    "categoryName": "Suspension"
+  },
+  {
+    "title": "Rear Shock Absorber SA-Rear-02",
+    "description": "Rear shock absorber tuned for comfort.",
+    "brand": "KYB",
+    "imageUrl": "https://images.unsplash.com/photo-1603569283847-aa295f0d016a?auto=format&fit=crop&w=1200&q=80",
+    "price": 1999,
+    "categoryName": "Suspension"
+  },
+  {
+    "title": "Stabilizer Link SL-305",
+    "description": "Anti-roll bar link for improved cornering stability.",
+    "brand": "Lemforder",
+    "imageUrl": "https://images.unsplash.com/photo-1575487426366-25f95df6f0f7?auto=format&fit=crop&w=1200&q=80",
+    "price": 749,
+    "categoryName": "Suspension"
+  },
+  {
+    "title": "Control Arm CA-Left-210",
+    "description": "Front lower left control arm with silent blocks.",
+    "brand": "Febi Bilstein",
+    "imageUrl": "https://images.unsplash.com/photo-1601268588577-319223ba08cf?auto=format&fit=crop&w=1200&q=80",
+    "price": 2599,
+    "categoryName": "Suspension"
+  }
+]

@@ -12,6 +12,10 @@
     "prisma:generate": "prisma generate",
     "prisma:seed": "prisma db seed",
     "import:fitment": "ts-node-dev --transpile-only src/scripts/fitment-import.ts",
+    "import:products:demo": "ts-node-dev --transpile-only src/scripts/import-demo-products.ts",
+    "import:vehicles:demo": "ts-node-dev --transpile-only src/scripts/import-demo-vehicles.ts",
+    "generate:fitment:demo": "ts-node-dev --transpile-only src/scripts/generate-demo-fitment.ts",
+    "seed:demo": "npm run import:products:demo && npm run import:vehicles:demo && npm run generate:fitment:demo",
     "lint": "eslint . --ext .ts"
   },
   "keywords": [],

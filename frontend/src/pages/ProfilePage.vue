@@ -7,6 +7,7 @@ import BaseCard from '../components/ui/BaseCard.vue'
 import BaseInput from '../components/ui/BaseInput.vue'
 import { useAuthStore } from '../stores/auth'
 import { useGarageStore } from '../stores/garage'
+import type { VehicleSpec } from '../types/garage'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -20,12 +21,22 @@ const selectedModelId = ref('')
 const selectedYear = ref('')
 const selectedSpecId = ref('')
 const nickname = ref('')
+const modelSpecs = ref<VehicleSpec[]>([])
 
 const availableYears = computed(() => {
-  const now = new Date().getFullYear()
-  const years: number[] = []
-  for (let y = now; y >= 1990; y -= 1) years.push(y)
-  return years
+  const years = new Set<number>()
+  for (const spec of modelSpecs.value) {
+    for (let year = spec.yearFrom; year <= spec.yearTo; year += 1) {
+      years.add(year)
+    }
+  }
+  return [...years].sort((a, b) => b - a)
+})
+
+const filteredSpecs = computed(() => {
+  if (!selectedYear.value) return modelSpecs.value
+  const year = Number(selectedYear.value)
+  return modelSpecs.value.filter((spec) => spec.yearFrom <= year && spec.yearTo >= year)
 })
 
 async function onLogout() {
@@ -63,21 +74,28 @@ async function onDeleteVehicle(id: number) {
 
 watch(selectedMakeId, async (newValue) => {
   selectedModelId.value = ''
+  selectedYear.value = ''
   selectedSpecId.value = ''
+  modelSpecs.value = []
   garage.models = []
   garage.specs = []
   if (!newValue) return
   await garage.fetchModels(Number(newValue))
 })
 
-watch([selectedModelId, selectedYear], async ([modelId, year]) => {
+watch(selectedModelId, async (modelId) => {
+  selectedYear.value = ''
   selectedSpecId.value = ''
-  garage.specs = []
+  modelSpecs.value = []
   if (!modelId) return
   await garage.fetchSpecs({
-    modelId: Number(modelId),
-    year: year ? Number(year) : undefined,
+    modelId: Number(modelId)
   })
+  modelSpecs.value = garage.specs
+})
+
+watch(selectedYear, () => {
+  selectedSpecId.value = ''
 })
 
 onMounted(async () => {
@@ -136,8 +154,8 @@ onMounted(async () => {
           </label>
           <label class="block">
             <span class="block text-sm font-semibold text-neutral-800 mb-1">Рік</span>
-            <select v-model="selectedYear" class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900">
-              <option value="">Будь-який рік</option>
+            <select v-model="selectedYear" class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900" :disabled="!selectedModelId">
+              <option value="">Оберіть рік</option>
               <option v-for="year in availableYears" :key="year" :value="String(year)">{{ year }}</option>
             </select>
           </label>
@@ -145,7 +163,7 @@ onMounted(async () => {
             <span class="block text-sm font-semibold text-neutral-800 mb-1">Двигун/модифікація</span>
             <select v-model="selectedSpecId" class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900" :disabled="!selectedModelId">
               <option value="">Оберіть авто</option>
-              <option v-for="spec in garage.specs" :key="spec.id" :value="String(spec.id)">
+              <option v-for="spec in filteredSpecs" :key="spec.id" :value="String(spec.id)">
                 {{ spec.normalizedName }}
               </option>
             </select>

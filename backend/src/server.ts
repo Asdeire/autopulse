@@ -10,7 +10,32 @@ import authPlugin from "./plugins/auth";
 async function buildServer() {
   const fastify = Fastify({ logger: true });
 
-  await fastify.register(cors, { origin: true });
+  const defaultOrigins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173"
+  ];
+  const configuredOrigins = (env.CORS_ORIGIN ?? "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
+
+  await fastify.register(cors, {
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+
+      callback(null, allowedOrigins.has(origin));
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    maxAge: 86400
+  });
   await fastify.register(prismaPlugin);
   await fastify.register(jwtPlugin);
   await fastify.register(authPlugin);

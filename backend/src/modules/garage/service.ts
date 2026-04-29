@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { Prisma } from "@prisma/client";
 
 type AddUserVehicleInput = {
   vehicleSpecId: number;
@@ -82,6 +83,14 @@ export async function getMyGarageVehicles(fastify: FastifyInstance, userId: numb
 }
 
 export async function addMyGarageVehicle(fastify: FastifyInstance, userId: number, input: AddUserVehicleInput) {
+  const user = await fastify.prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true }
+  });
+  if (!user) {
+    throw makeHttpError("User not found. Please sign in again.", 401);
+  }
+
   const vehicleSpec = await fastify.prisma.vehicleSpec.findUnique({
     where: { id: input.vehicleSpecId },
     select: { id: true }
@@ -106,40 +115,48 @@ export async function addMyGarageVehicle(fastify: FastifyInstance, userId: numbe
   const firstVehicle = (await fastify.prisma.userVehicle.count({ where: { userId } })) === 0;
   const shouldSetPrimary = input.isPrimary === true || firstVehicle;
 
-  return fastify.prisma.$transaction(async (tx) => {
-    if (shouldSetPrimary) {
-      await tx.userVehicle.updateMany({
-        where: { userId, isPrimary: true },
-        data: { isPrimary: false }
-      });
-    }
+  try {
+    return fastify.prisma.$transaction(async (tx) => {
+      if (shouldSetPrimary) {
+        await tx.userVehicle.updateMany({
+          where: { userId, isPrimary: true },
+          data: { isPrimary: false }
+        });
+      }
 
-    return tx.userVehicle.create({
-      data: {
-        userId,
-        vehicleSpecId: input.vehicleSpecId,
-        nickname: input.nickname?.trim() || null,
-        isPrimary: shouldSetPrimary
-      },
-      select: {
-        id: true,
-        nickname: true,
-        isPrimary: true,
-        createdAt: true,
-        vehicleSpec: {
-          select: {
-            id: true,
-            yearFrom: true,
-            yearTo: true,
-            normalizedName: true,
-            make: { select: { id: true, name: true } },
-            model: { select: { id: true, name: true } },
-            engine: { select: { id: true, name: true, code: true } }
+      return tx.userVehicle.create({
+        data: {
+          userId,
+          vehicleSpecId: input.vehicleSpecId,
+          nickname: input.nickname?.trim() || null,
+          isPrimary: shouldSetPrimary
+        },
+        select: {
+          id: true,
+          nickname: true,
+          isPrimary: true,
+          createdAt: true,
+          vehicleSpec: {
+            select: {
+              id: true,
+              yearFrom: true,
+              yearTo: true,
+              normalizedName: true,
+              make: { select: { id: true, name: true } },
+              model: { select: { id: true, name: true } },
+              engine: { select: { id: true, name: true, code: true } }
+            }
           }
         }
-      }
+      });
     });
-  });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
+      throw makeHttpError("Unable to add vehicle: user or vehicle spec no longer exists.", 409);
+    }
+
+    throw error;
+  }
 }
 
 export async function makePrimaryGarageVehicle(
