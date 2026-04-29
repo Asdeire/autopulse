@@ -32,7 +32,7 @@ const year = new Date().getFullYear()
 
       <div class="mt-8 pt-4 border-t border-neutral-800 text-xs text-neutral-400 flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between">
         <div>© {{ year }} AutoPulse. Всі права захищено.</div>
-        <div>MVP інтернет-магазину автотоварів</div>
+        <div>Інтернет-магазин автотоварів</div>
       </div>
     </div>
   </footer>

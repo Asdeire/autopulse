@@ -21,6 +21,9 @@ const brand = ref('')
 const categoryId = ref<string>('')
 const sortBy = ref<ProductsQuery['sortBy']>('price_asc')
 const onlyCompatible = ref(false)
+const page = ref(1)
+const pageSize = 12
+type PaginationToken = number | 'ellipsis'
 
 const normalizedQuery = computed<ProductsQuery>(() => {
   const q: ProductsQuery = {}
@@ -29,6 +32,8 @@ const normalizedQuery = computed<ProductsQuery>(() => {
   if (categoryId.value) q.categoryId = Number(categoryId.value)
   if (sortBy.value) q.sortBy = sortBy.value
   if (onlyCompatible.value) q.onlyCompatible = true
+  q.page = page.value
+  q.pageSize = pageSize
   q.usePrimaryVehicle = true
   return q
 })
@@ -39,6 +44,8 @@ function hydrateFromRoute() {
   brand.value = typeof q.brand === 'string' ? q.brand : ''
   categoryId.value = typeof q.categoryId === 'string' ? q.categoryId : ''
   onlyCompatible.value = q.onlyCompatible === 'true'
+  const parsedPage = typeof q.page === 'string' ? Number(q.page) : Number.NaN
+  page.value = Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1
   sortBy.value =
     q.sortBy === 'price_desc' || q.sortBy === 'price_asc' ? (q.sortBy as ProductsQuery['sortBy']) : 'price_asc'
 }
@@ -52,6 +59,7 @@ async function applyFilters() {
   await router.replace({
     query: {
       ...normalizedQuery.value,
+      page: '1',
       usePrimaryVehicle: normalizedQuery.value.usePrimaryVehicle ? 'true' : undefined,
       onlyCompatible: normalizedQuery.value.onlyCompatible ? 'true' : undefined,
     },
@@ -64,8 +72,47 @@ function resetFilters() {
   categoryId.value = ''
   sortBy.value = 'price_asc'
   onlyCompatible.value = false
+  page.value = 1
   router.replace({ query: {} })
 }
+
+async function goToPage(nextPage: number) {
+  const safePage = Math.max(1, Math.min(nextPage, catalog.pagination.totalPages || 1))
+  await router.replace({
+    query: {
+      ...route.query,
+      page: String(safePage),
+    },
+  })
+}
+
+const visibleRange = computed(() => {
+  if (!catalog.products.length) {
+    return '0-0'
+  }
+  const start = (catalog.pagination.page - 1) * catalog.pagination.pageSize + 1
+  const end = start + catalog.products.length - 1
+  return `${start}-${end}`
+})
+
+const paginationItems = computed<PaginationToken[]>(() => {
+  const total = catalog.pagination.totalPages
+  const current = catalog.pagination.page
+
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, index) => index + 1)
+  }
+
+  if (current <= 3) {
+    return [1, 2, 3, 'ellipsis', total]
+  }
+
+  if (current >= total - 2) {
+    return [1, 'ellipsis', total - 2, total - 1, total]
+  }
+
+  return [1, 'ellipsis', current, current + 1, 'ellipsis', total]
+})
 
 watch(
   () => route.query,
@@ -128,7 +175,7 @@ onMounted(async () => {
         <div class="flex flex-wrap items-center gap-2">
           <BaseButton variant="primary" @click="applyFilters">Застосувати</BaseButton>
           <BaseButton variant="ghost" @click="resetFilters">Скинути</BaseButton>
-          <BaseBadge variant="neutral">Товарів: {{ catalog.products.length }}</BaseBadge>
+          <BaseBadge variant="neutral">Показано: {{ visibleRange }} з {{ catalog.pagination.total }}</BaseBadge>
         </div>
       </div>
     </BaseCard>
@@ -184,6 +231,44 @@ onMounted(async () => {
         </BaseCard>
       </RouterLink>
     </div>
+
+    <BaseCard v-if="catalog.pagination.totalPages > 1">
+      <div class="flex items-center justify-center gap-1 sm:gap-2 text-[#002B39]">
+        <button
+          type="button"
+          class="grid h-9 w-9 place-items-center rounded-full transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:text-neutral-400"
+          :disabled="catalog.pagination.page <= 1 || catalog.loading"
+          @click="goToPage(catalog.pagination.page - 1)"
+          aria-label="Попередня сторінка"
+        >
+          <span class="text-2xl leading-none">‹</span>
+        </button>
+
+        <template v-for="(item, index) in paginationItems" :key="`${item}-${index}`">
+          <button
+            v-if="item !== 'ellipsis'"
+            type="button"
+            class="grid h-9 w-9 place-items-center rounded-full text-sm font-medium transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed"
+            :class="item === catalog.pagination.page ? 'border-2 border-[#002B39] bg-white' : ''"
+            :disabled="catalog.loading"
+            @click="goToPage(item)"
+          >
+            {{ item }}
+          </button>
+          <span v-else class="px-1 text-sm font-semibold">...</span>
+        </template>
+
+        <button
+          type="button"
+          class="grid h-9 w-9 place-items-center rounded-full transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:text-neutral-400"
+          :disabled="catalog.pagination.page >= catalog.pagination.totalPages || catalog.loading"
+          @click="goToPage(catalog.pagination.page + 1)"
+          aria-label="Наступна сторінка"
+        >
+          <span class="text-2xl leading-none">›</span>
+        </button>
+      </div>
+    </BaseCard>
   </div>
 </template>
 

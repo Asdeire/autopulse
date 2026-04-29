@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { Category, Product, ProductsQuery } from '../types/catalog'
+import type { Category, PaginationMeta, Product, ProductsQuery } from '../types/catalog'
 import * as catalogApi from '../services/catalog.api'
 import { getApiErrorInfo } from '../services/api-errors'
 
@@ -7,6 +7,7 @@ export type CatalogState = {
   products: Product[]
   categories: Category[]
   filters: ProductsQuery
+  pagination: PaginationMeta
   loading: boolean
   error: string | null
 }
@@ -15,6 +16,12 @@ const defaultState: CatalogState = {
   products: [],
   categories: [],
   filters: {},
+  pagination: {
+    page: 1,
+    pageSize: 12,
+    total: 0,
+    totalPages: 1,
+  },
   loading: false,
   error: null,
 }
@@ -40,7 +47,9 @@ export const useCatalogStore = defineStore('catalog', {
       this.loading = true
       this.error = null
       try {
-        this.products = await catalogApi.getProducts(query ?? this.filters)
+        const response = await catalogApi.getProducts(query ?? this.filters)
+        this.products = response.items
+        this.pagination = response.meta
       } catch (e) {
         this.error = getApiErrorInfo(e).message
       } finally {

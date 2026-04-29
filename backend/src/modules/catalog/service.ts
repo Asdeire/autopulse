@@ -8,7 +8,13 @@ type GetProductsQuery = {
   sortBy?: "price_asc" | "price_desc";
   vehicleSpecId?: number;
   onlyCompatible?: boolean;
+  page?: number;
+  pageSize?: number;
 };
+
+const DEFAULT_PAGE = 1;
+const DEFAULT_PAGE_SIZE = 12;
+const MAX_PAGE_SIZE = 50;
 
 function buildOrderBy(sortBy?: "price_asc" | "price_desc"): Prisma.ProductOrderByWithRelationInput {
   if (sortBy === "price_desc") {
@@ -34,6 +40,9 @@ export async function getCategories(fastify: FastifyInstance) {
 
 export async function getProducts(fastify: FastifyInstance, query: GetProductsQuery) {
   const where: Prisma.ProductWhereInput = {};
+  const page = query.page ?? DEFAULT_PAGE;
+  const pageSize = Math.min(query.pageSize ?? DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE);
+  const skip = (page - 1) * pageSize;
 
   if (query.categoryId !== undefined) {
     where.categoryId = query.categoryId;
@@ -41,6 +50,16 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
 
   if (query.brand) {
     where.brand = query.brand;
+  }
+
+  if (query.search) {
+    const normalizedSearch = query.search.trim();
+    if (normalizedSearch.length > 0) {
+      where.OR = [
+        { title: { contains: normalizedSearch, mode: "insensitive" } },
+        { description: { contains: normalizedSearch, mode: "insensitive" } }
+      ];
+    }
   }
 
   if (query.vehicleSpecId !== undefined && query.onlyCompatible) {
@@ -51,9 +70,12 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
     };
   }
 
-  const products = await fastify.prisma.product.findMany({
+  const [products, total] = await fastify.prisma.$transaction([
+    fastify.prisma.product.findMany({
     where,
     orderBy: buildOrderBy(query.sortBy),
+    skip,
+    take: pageSize,
     select: {
       id: true,
       title: true,
@@ -79,7 +101,9 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
           }
         : false
     }
-  });
+  }),
+    fastify.prisma.product.count({ where })
+  ]);
 
   const productsWithCompatibility = products.map((product) => {
     const compatibilityEntries =
@@ -90,18 +114,15 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
     };
   });
 
-  if (!query.search) {
-    return productsWithCompatibility;
-  }
-
-  const normalizedSearch = query.search.trim().toLowerCase();
-
-  return productsWithCompatibility.filter((product) => {
-    return (
-      product.title.toLowerCase().includes(normalizedSearch) ||
-      product.description.toLowerCase().includes(normalizedSearch)
-    );
-  });
+  return {
+    items: productsWithCompatibility,
+    meta: {
+      page,
+      pageSize,
+      total,
+      totalPages: Math.max(1, Math.ceil(total / pageSize))
+    }
+  };
 }
 
 export async function getProductById(fastify: FastifyInstance, id: number, vehicleSpecId?: number) {

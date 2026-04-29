@@ -28,5 +28,19 @@ export type ProductsQuery = {
   vehicleSpecId?: number
   usePrimaryVehicle?: boolean
   onlyCompatible?: boolean
+  page?: number
+  pageSize?: number
+}
+
+export type PaginationMeta = {
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
+}
+
+export type PaginatedProducts = {
+  items: Product[]
+  meta: PaginationMeta
 }
 

@@ -10,6 +10,8 @@ type GetProductsQuery = {
   vehicleSpecId?: number;
   usePrimaryVehicle?: boolean;
   onlyCompatible?: boolean;
+  page?: number;
+  pageSize?: number;
 };
 
 type GetProductByIdParams = {

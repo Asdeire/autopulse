@@ -1,5 +1,5 @@
 import { http } from './http'
-import type { Category, Product, ProductsQuery } from '../types/catalog'
+import type { Category, PaginatedProducts, Product, ProductsQuery } from '../types/catalog'
 
 export async function getCategories() {
   const res = await http.get<Category[]>('/categories')
@@ -7,7 +7,7 @@ export async function getCategories() {
 }
 
 export async function getProducts(query: ProductsQuery = {}) {
-  const res = await http.get<Product[]>('/products', { params: query })
+  const res = await http.get<PaginatedProducts>('/products', { params: query })
   return res.data
 }
 

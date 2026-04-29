@@ -17,6 +17,8 @@ const catalogRoutes: FastifyPluginAsync = async (fastify) => {
       vehicleSpecId?: number;
       usePrimaryVehicle?: boolean;
       onlyCompatible?: boolean;
+      page?: number;
+      pageSize?: number;
     };
   }>("/products", {
     schema: {
@@ -29,7 +31,9 @@ const catalogRoutes: FastifyPluginAsync = async (fastify) => {
           sortBy: { type: "string", enum: ["price_asc", "price_desc"] },
           vehicleSpecId: { type: "integer", minimum: 1 },
           usePrimaryVehicle: { type: "boolean" },
-          onlyCompatible: { type: "boolean" }
+          onlyCompatible: { type: "boolean" },
+          page: { type: "integer", minimum: 1 },
+          pageSize: { type: "integer", minimum: 1, maximum: 50 }
         }
       }
     }

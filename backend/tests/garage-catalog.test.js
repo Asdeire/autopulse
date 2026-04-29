@@ -151,10 +151,11 @@ test("garage CRUD and primary vehicle catalog compatibility", async () => {
       headers: { authorization: `Bearer ${token}` }
     });
     assert.equal(compatibleProductsResponse.statusCode, 200);
-    const compatibleProducts = compatibleProductsResponse.json();
-    assert.equal(compatibleProducts.length, 1);
-    assert.equal(compatibleProducts[0].title, compatibleProduct.title);
-    assert.equal(compatibleProducts[0].isCompatible, true);
+    const compatibleProductsPayload = compatibleProductsResponse.json();
+    assert.equal(compatibleProductsPayload.items.length, 1);
+    assert.equal(compatibleProductsPayload.items[0].title, compatibleProduct.title);
+    assert.equal(compatibleProductsPayload.items[0].isCompatible, true);
+    assert.equal(compatibleProductsPayload.meta.total, 1);
 
     const deleteResponse = await app.inject({
       method: "DELETE",
