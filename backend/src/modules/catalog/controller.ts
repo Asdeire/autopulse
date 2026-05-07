@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { getCategories, getProductById, getProducts } from "./service";
+import { getCategories, getProductById, getProducts, getRecommendedProducts } from "./service";
 import { getPrimaryVehicleSpecId } from "../garage/service";
 
 type GetProductsQuery = {
@@ -67,4 +67,12 @@ export async function getProductByIdController(
   );
   const product = await getProductById(request.server, request.params.id, vehicleSpecId);
   return reply.send(product);
+}
+
+export async function getRecommendedProductsController(
+  request: FastifyRequest<{ Params: GetProductByIdParams; Querystring: { limit?: number } }>,
+  reply: FastifyReply
+) {
+  const products = await getRecommendedProducts(request.server, request.params.id, request.query.limit);
+  return reply.send(products);
 }

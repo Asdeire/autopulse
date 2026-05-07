@@ -16,3 +16,8 @@ export async function getProductById(id: number, query?: Pick<ProductsQuery, 've
   return res.data
 }
 
+export async function getRecommendedProducts(id: number) {
+  const res = await http.get<Product[]>(`/products/${id}/recommendations`)
+  return res.data
+}
+

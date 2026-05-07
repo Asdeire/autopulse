@@ -125,6 +125,60 @@ export async function getProducts(fastify: FastifyInstance, query: GetProductsQu
   };
 }
 
+const PRODUCT_BASE_SELECT = {
+  id: true,
+  title: true,
+  description: true,
+  brand: true,
+  imageUrl: true,
+  price: true,
+  categoryId: true,
+  category: {
+    select: {
+      id: true,
+      name: true
+    }
+  }
+} as const;
+
+export async function getRecommendedProducts(fastify: FastifyInstance, id: number, limit = 6) {
+  const current = await fastify.prisma.product.findUnique({
+    where: { id },
+    select: { brand: true, categoryId: true }
+  });
+
+  if (!current) {
+    const error = new Error("Product not found") as Error & { statusCode?: number };
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const sameBrand = await fastify.prisma.product.findMany({
+    where: { brand: current.brand, id: { not: id } },
+    take: limit,
+    orderBy: { createdAt: "desc" },
+    select: PRODUCT_BASE_SELECT
+  });
+
+  const remaining = limit - sameBrand.length;
+  const sameBrandIds = sameBrand.map((p) => p.id);
+
+  const sameCategory =
+    remaining > 0
+      ? await fastify.prisma.product.findMany({
+          where: {
+            categoryId: current.categoryId,
+            id: { notIn: [id, ...sameBrandIds] }
+          },
+          take: remaining,
+          orderBy: { createdAt: "desc" },
+          select: PRODUCT_BASE_SELECT
+        })
+      : [];
+
+  return [...sameBrand, ...sameCategory].map((p) => ({ ...p, isCompatible: null }));
+}
+
 export async function getProductById(fastify: FastifyInstance, id: number, vehicleSpecId?: number) {
   const product = await fastify.prisma.product.findUnique({
     where: { id },

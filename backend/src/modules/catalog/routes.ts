@@ -2,7 +2,8 @@ import { FastifyPluginAsync } from "fastify";
 import {
   getCategoriesController,
   getProductByIdController,
-  getProductsController
+  getProductsController,
+  getRecommendedProductsController
 } from "./controller";
 
 const catalogRoutes: FastifyPluginAsync = async (fastify) => {
@@ -63,6 +64,27 @@ const catalogRoutes: FastifyPluginAsync = async (fastify) => {
       }
     }
   }, getProductByIdController);
+
+  fastify.get<{
+    Params: { id: number };
+    Querystring: { limit?: number };
+  }>("/products/:id/recommendations", {
+    schema: {
+      params: {
+        type: "object",
+        required: ["id"],
+        properties: {
+          id: { type: "integer", minimum: 1 }
+        }
+      },
+      querystring: {
+        type: "object",
+        properties: {
+          limit: { type: "integer", minimum: 1, maximum: 20 }
+        }
+      }
+    }
+  }, getRecommendedProductsController);
 };
 
 export default catalogRoutes;
