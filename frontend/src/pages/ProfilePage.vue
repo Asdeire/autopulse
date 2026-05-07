@@ -119,7 +119,7 @@ onMounted(async () => {
     <BaseCard>
       <div class="grid gap-4">
         <div>
-          <div class="text-sm text-neutral-500">Email</div>
+          <div class="text-sm text-neutral-500">Електронна пошта</div>
           <div class="text-lg font-semibold text-neutral-900">{{ userEmail }}</div>
         </div>
         <div class="text-sm text-neutral-500">

@@ -54,7 +54,14 @@ async function submit() {
 
     <BaseCard v-else>
       <div class="grid gap-4">
-        <div class="text-sm text-neutral-500">Позицій: {{ items.length }}</div>
+          <div class="grid gap-1 rounded-md border border-neutral-200 bg-neutral-50 p-3">
+          <div class="text-sm font-semibold text-neutral-800">Склад замовлення:</div>
+          <ul class="grid gap-1 text-sm text-neutral-700">
+            <li v-for="item in items" :key="item.productId">
+              {{ item.name }} — x{{ item.quantity }} • {{ item.price * item.quantity }} ₴
+            </li>
+          </ul>
+        </div>
         <div class="text-lg font-extrabold text-neutral-900">Разом: {{ total }} ₴</div>
 
         <div v-if="orders.loading || submitting">

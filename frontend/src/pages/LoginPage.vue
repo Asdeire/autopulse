@@ -41,7 +41,13 @@ async function onSubmit() {
 
     <BaseCard>
       <form class="grid gap-4" @submit.prevent="onSubmit">
-        <BaseInput v-model="email" label="Email" type="email" autocomplete="email" placeholder="you@example.com" />
+        <BaseInput
+          v-model="email"
+          label="Електронна пошта"
+          type="email"
+          autocomplete="email"
+          placeholder="name@example.com"
+        />
         <BaseInput
           v-model="password"
           label="Пароль"

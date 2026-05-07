@@ -24,7 +24,7 @@ import BaseCard from '../components/ui/BaseCard.vue'
           </div>
         </div>
         <div class="hidden sm:block">
-          <img src="../assets/hero.png" alt="AutoPulse hero" class="w-full rounded-lg shadow-sm" />
+          <img src="../assets/hero.png" alt="Головний банер AutoPulse" class="w-full rounded-lg shadow-sm" />
         </div>
       </div>
     </BaseCard>

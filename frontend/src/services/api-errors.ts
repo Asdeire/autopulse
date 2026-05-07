@@ -21,13 +21,13 @@ export function getApiErrorInfo(error: unknown): ApiErrorInfo {
       return { message: error.message, statusCode }
     }
 
-    return { message: 'Request failed', statusCode }
+    return { message: 'Не вдалося виконати запит', statusCode }
   }
 
   if (error instanceof Error && error.message.trim().length > 0) {
     return { message: error.message }
   }
 
-  return { message: 'Something went wrong' }
+  return { message: 'Сталася помилка' }
 }
 

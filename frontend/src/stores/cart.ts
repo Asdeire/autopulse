@@ -3,12 +3,14 @@ import { STORAGE_KEYS } from '../constants/storage'
 import { storageGetJson, storageRemove, storageSetJson } from '../utils/storage'
 import type { CartItem, CartState } from '../types/cart'
 
-const defaultState: CartState = {
-  items: [],
+function createDefaultState(): CartState {
+  return {
+    items: [],
+  }
 }
 
 export const useCartStore = defineStore('cart', {
-  state: (): CartState => ({ ...defaultState }),
+  state: (): CartState => createDefaultState(),
   getters: {
     itemsCount: (state) => state.items.reduce((acc, item) => acc + item.quantity, 0),
     totalAmount: (state) => state.items.reduce((acc, item) => acc + item.price * item.quantity, 0),
@@ -48,7 +50,7 @@ export const useCartStore = defineStore('cart', {
       this.persist()
     },
     clearCart() {
-      Object.assign(this, defaultState)
+      Object.assign(this, createDefaultState())
       storageRemove(STORAGE_KEYS.cart)
     },
   },

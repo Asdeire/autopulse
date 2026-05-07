@@ -133,7 +133,7 @@ onMounted(async () => {
     <BaseCard>
       <div class="grid gap-4">
         <div class="grid gap-3 md:grid-cols-4">
-          <BaseInput v-model="search" label="Пошук" placeholder="Напр. oil, filter..." />
+          <BaseInput v-model="search" label="Пошук" placeholder="Напр. олива, фільтр..." />
           <BaseInput v-model="brand" label="Бренд" placeholder="Напр. Bosch" />
 
           <label class="block">

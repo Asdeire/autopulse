@@ -8,6 +8,27 @@ import { useOrdersStore } from '../stores/orders'
 
 const orders = useOrdersStore()
 
+function formatOrderStatus(status: string) {
+  switch (status.toLowerCase()) {
+    case 'pending':
+      return 'В очікуванні'
+    case 'processing':
+      return 'В обробці'
+    case 'paid':
+      return 'Оплачено'
+    case 'shipped':
+      return 'Відправлено'
+    case 'delivered':
+      return 'Доставлено'
+    case 'cancelled':
+      return 'Скасовано'
+    case 'completed':
+      return 'Завершено'
+    default:
+      return status
+  }
+}
+
 async function load() {
   await orders.fetchMyOrders()
 }
@@ -43,7 +64,7 @@ onMounted(load)
             <div class="font-extrabold text-neutral-900">Замовлення #{{ o.id }}</div>
             <div class="text-sm text-neutral-500">{{ new Date(o.createdAt).toLocaleString() }}</div>
           </div>
-          <div class="text-sm text-neutral-700">Статус: {{ o.status }}</div>
+          <div class="text-sm text-neutral-700">Статус: {{ formatOrderStatus(o.status) }}</div>
           <div class="text-sm text-neutral-700">Сума: {{ o.totalPrice }} ₴</div>
           <div class="pt-2 border-t border-neutral-200">
             <div class="text-sm font-semibold text-neutral-800">Позиції:</div>
