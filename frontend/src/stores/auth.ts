@@ -8,6 +8,7 @@ import { storageGetJson, storageRemove, storageSetJson } from '../utils/storage'
 const defaultState: AuthState = {
   token: null,
   userEmail: null,
+  role: null,
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -21,16 +22,18 @@ export const useAuthStore = defineStore('auth', {
       if (!stored) return
       this.token = stored.token ?? null
       this.userEmail = stored.userEmail ?? null
+      this.role = stored.role ?? null
     },
-    setAuth(payload: { token: string; userEmail?: string | null }) {
+    setAuth(payload: { token: string; userEmail?: string | null; role?: AuthState['role'] }) {
       this.token = payload.token
       this.userEmail = payload.userEmail ?? null
-      storageSetJson(STORAGE_KEYS.auth, { token: this.token, userEmail: this.userEmail })
+      this.role = payload.role ?? null
+      storageSetJson(STORAGE_KEYS.auth, { token: this.token, userEmail: this.userEmail, role: this.role })
     },
     async login(input: { email: string; password: string }) {
       try {
         const res = await authApi.login(input)
-        this.setAuth({ token: res.token, userEmail: res.user.email })
+        this.setAuth({ token: res.token, userEmail: res.user.email, role: res.user.role })
       } catch (e) {
         throw new Error(getApiErrorInfo(e).message)
       }
@@ -38,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
     async register(input: { email: string; password: string }) {
       try {
         const res = await authApi.register(input)
-        this.setAuth({ token: res.token, userEmail: res.user.email })
+        this.setAuth({ token: res.token, userEmail: res.user.email, role: res.user.role })
       } catch (e) {
         throw new Error(getApiErrorInfo(e).message)
       }

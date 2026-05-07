@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { FastifyInstance } from "fastify";
+import { UserRole } from "@prisma/client";
 
 type AuthInput = {
   email: string;
@@ -11,6 +12,7 @@ type AuthResponse = {
   user: {
     id: number;
     email: string;
+    role: UserRole;
   };
 };
 
@@ -42,13 +44,15 @@ export async function registerUser(fastify: FastifyInstance, input: AuthInput): 
     },
     select: {
       id: true,
-      email: true
+      email: true,
+      role: true
     }
   });
 
   const token = fastify.jwt.sign({
     userId: user.id,
-    email: user.email
+    email: user.email,
+    role: user.role
   });
 
   return { token, user };
@@ -56,7 +60,13 @@ export async function registerUser(fastify: FastifyInstance, input: AuthInput): 
 
 export async function loginUser(fastify: FastifyInstance, input: AuthInput): Promise<AuthResponse> {
   const user = await fastify.prisma.user.findUnique({
-    where: { email: input.email }
+    where: { email: input.email },
+    select: {
+      id: true,
+      email: true,
+      password: true,
+      role: true
+    }
   });
 
   if (!user) {
@@ -71,14 +81,16 @@ export async function loginUser(fastify: FastifyInstance, input: AuthInput): Pro
 
   const token = fastify.jwt.sign({
     userId: user.id,
-    email: user.email
+    email: user.email,
+    role: user.role
   });
 
   return {
     token,
     user: {
       id: user.id,
-      email: user.email
+      email: user.email,
+      role: user.role
     }
   };
 }

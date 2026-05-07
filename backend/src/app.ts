@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 
 import authRoutes from "./modules/auth/routes";
+import adminProductsRoutes from "./modules/admin-products/routes";
 import catalogRoutes from "./modules/catalog/routes";
 import garageRoutes from "./modules/garage/routes";
 import ordersRoutes from "./modules/orders/routes";
@@ -11,6 +12,7 @@ export async function registerApp(fastify: FastifyInstance): Promise<void> {
   });
 
   await fastify.register(authRoutes, { prefix: "/api" });
+  await fastify.register(adminProductsRoutes, { prefix: "/api" });
   await fastify.register(catalogRoutes, { prefix: "/api" });
   await fastify.register(garageRoutes, { prefix: "/api" });
   await fastify.register(ordersRoutes, { prefix: "/api" });

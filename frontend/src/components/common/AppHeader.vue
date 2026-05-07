@@ -12,6 +12,7 @@ const auth = useAuthStore()
 const cart = useCartStore()
 
 const isAuthed = computed(() => auth.isAuthenticated)
+const isAdmin = computed(() => auth.role === 'ADMIN')
 const cartCount = computed(() => cart.itemsCount)
 const userLabel = computed(() => auth.userEmail || 'Користувач')
 
@@ -90,6 +91,9 @@ onBeforeUnmount(() => {
         <RouterLink v-if="isAuthed" to="/orders" class="hover:text-yellow-400 transition-colors"
           >Замовлення</RouterLink
         >
+        <RouterLink v-if="isAdmin" to="/admin/products" class="hover:text-yellow-400 transition-colors"
+          >Адмін панель</RouterLink
+        >
       </nav>
 
       <div class="flex items-center gap-2">
@@ -167,6 +171,15 @@ onBeforeUnmount(() => {
             >
               Переглянути профіль
             </button>
+            <RouterLink
+              v-if="isAdmin"
+              to="/admin/products"
+              class="block w-full rounded px-3 py-2 text-left text-sm hover:bg-neutral-100"
+              role="menuitem"
+              @click="closeUserMenu"
+            >
+              Адмін панель
+            </RouterLink>
             <button
               type="button"
               class="w-full rounded px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
@@ -207,6 +220,15 @@ onBeforeUnmount(() => {
             @click="closeMobileMenu"
           >
             Замовлення
+          </RouterLink>
+
+          <RouterLink
+            v-if="isAdmin"
+            to="/admin/products"
+            class="hover:text-yellow-400 transition-colors"
+            @click="closeMobileMenu"
+          >
+            Адмін панель
           </RouterLink>
 
           <div class="pt-2 border-t border-neutral-800">

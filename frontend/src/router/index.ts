@@ -12,6 +12,8 @@ const LoginPage = () => import('../pages/LoginPage.vue')
 const RegisterPage = () => import('../pages/RegisterPage.vue')
 const MyOrdersPage = () => import('../pages/MyOrdersPage.vue')
 const ProfilePage = () => import('../pages/ProfilePage.vue')
+const AdminProductsPage = () => import('../pages/AdminProductsPage.vue')
+const AdminProductFormPage = () => import('../pages/AdminProductFormPage.vue')
 const NotFoundPage = () => import('../pages/NotFoundPage.vue')
 
 export const router = createRouter({
@@ -46,20 +48,46 @@ export const router = createRouter({
       component: ProfilePage,
       meta: { layout: 'main', requiresAuth: true },
     },
+    {
+      path: '/admin/products',
+      name: 'admin-products',
+      component: AdminProductsPage,
+      meta: { layout: 'main', requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: '/admin/products/new',
+      name: 'admin-product-create',
+      component: AdminProductFormPage,
+      meta: { layout: 'main', requiresAuth: true, requiresAdmin: true },
+    },
+    {
+      path: '/admin/products/:id/edit',
+      name: 'admin-product-edit',
+      component: AdminProductFormPage,
+      meta: { layout: 'main', requiresAuth: true, requiresAdmin: true },
+    },
     { path: '/:pathMatch(.*)*', name: 'notfound', component: NotFoundPage, meta: { layout: 'main' } },
   ],
 })
 
 router.beforeEach((to) => {
-  if (!to.meta.requiresAuth) return true
+  const needsAuth = Boolean(to.meta.requiresAuth || to.meta.requiresAdmin)
+  if (!needsAuth) return true
 
   const auth = storageGetJson<AuthState>(STORAGE_KEYS.auth)
   const token = auth?.token
-  if (token) return true
 
-  return {
-    path: '/login',
-    query: { redirect: to.fullPath },
+  if (!token) {
+    return {
+      path: '/login',
+      query: { redirect: to.fullPath },
+    }
   }
+
+  if (to.meta.requiresAdmin && auth?.role !== 'ADMIN') {
+    return { path: '/' }
+  }
+
+  return true
 })
 

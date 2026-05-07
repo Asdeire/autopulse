@@ -1,10 +1,12 @@
 import { http } from './http'
+import type { UserRole } from '../types/auth'
 
 export type AuthResponse = {
   token: string
   user: {
     id: number
     email: string
+    role: UserRole
   }
 }
 
