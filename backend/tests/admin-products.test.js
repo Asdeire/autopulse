@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const Fastify = require("fastify");
 const cors = require("@fastify/cors");
+const multipart = require("@fastify/multipart");
 
 const prismaPlugin = require("../dist/src/plugins/prisma").default;
 const jwtPlugin = require("../dist/src/plugins/jwt").default;
@@ -14,11 +15,46 @@ const prisma = new PrismaClient();
 async function createServer() {
   const app = Fastify();
   await app.register(cors, { origin: true });
+  await app.register(multipart);
   await app.register(prismaPlugin);
   await app.register(jwtPlugin);
   await app.register(authPlugin);
   await registerApp(app);
   return app;
+}
+
+function buildMultipartPayload(fields, file) {
+  const boundary = `----autopulse-boundary-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const chunks = [];
+
+  for (const [key, value] of Object.entries(fields)) {
+    chunks.push(
+      Buffer.from(
+        `--${boundary}\r\n` +
+          `Content-Disposition: form-data; name="${key}"\r\n\r\n` +
+          `${value}\r\n`
+      )
+    );
+  }
+
+  if (file) {
+    chunks.push(
+      Buffer.from(
+        `--${boundary}\r\n` +
+          `Content-Disposition: form-data; name="${file.fieldName}"; filename="${file.filename}"\r\n` +
+          `Content-Type: ${file.contentType}\r\n\r\n`
+      )
+    );
+    chunks.push(file.content);
+    chunks.push(Buffer.from("\r\n"));
+  }
+
+  chunks.push(Buffer.from(`--${boundary}--\r\n`));
+
+  return {
+    payload: Buffer.concat(chunks),
+    contentType: `multipart/form-data; boundary=${boundary}`
+  };
 }
 
 async function registerAndLogin(app, email, password) {
@@ -142,6 +178,14 @@ test("admin products CRUD is ADMIN-only and manages compatibility", async () => 
     const adminLogin = adminLoginResponse.json();
     assert.equal(adminLogin.user.role, "ADMIN");
 
+    let uploadCounter = 0;
+    app.imageStorage = {
+      uploadProductImage: async () => {
+        uploadCounter += 1;
+        return `https://res.cloudinary.com/demo/image/upload/autopulse/test-${uploadCounter}.jpg`;
+      }
+    };
+
     const forbiddenCreate = await app.inject({
       method: "POST",
       url: "/api/admin/products",
@@ -218,6 +262,66 @@ test("admin products CRUD is ADMIN-only and manages compatibility", async () => 
     assert.equal(updatedProduct.categoryId, categoryB.id);
     assert.deepEqual(updatedProduct.vehicleSpecIds, [specTwo.id]);
     assert.equal(updatedProduct.imageUrl, "https://via.placeholder.com/800x600?text=AutoPulse+Product");
+
+    const createMultipart = buildMultipartPayload(
+      {
+        title: `Multipart Product ${suffix}`,
+        description: "Multipart upload test",
+        brand: "CloudinaryBrand",
+        price: "300.75",
+        categoryId: String(categoryA.id),
+        vehicleSpecIds: JSON.stringify([specOne.id])
+      },
+      {
+        fieldName: "image",
+        filename: "product.jpg",
+        contentType: "image/jpeg",
+        content: Buffer.from("fake image data")
+      }
+    );
+
+    const multipartCreateResponse = await app.inject({
+      method: "POST",
+      url: "/api/admin/products",
+      headers: {
+        authorization: `Bearer ${adminLogin.token}`,
+        "content-type": createMultipart.contentType
+      },
+      payload: createMultipart.payload
+    });
+    assert.equal(multipartCreateResponse.statusCode, 201);
+    const multipartCreated = multipartCreateResponse.json();
+    assert.equal(multipartCreated.imageUrl, "https://res.cloudinary.com/demo/image/upload/autopulse/test-1.jpg");
+
+    const updateMultipart = buildMultipartPayload(
+      {
+        title: `Multipart Updated ${suffix}`,
+        description: "Multipart update test",
+        brand: "CloudinaryBrand",
+        price: "333.5",
+        categoryId: String(categoryB.id),
+        vehicleSpecIds: JSON.stringify([specTwo.id])
+      },
+      {
+        fieldName: "image",
+        filename: "product-updated.jpg",
+        contentType: "image/jpeg",
+        content: Buffer.from("fake image data 2")
+      }
+    );
+
+    const multipartUpdateResponse = await app.inject({
+      method: "PUT",
+      url: `/api/admin/products/${multipartCreated.id}`,
+      headers: {
+        authorization: `Bearer ${adminLogin.token}`,
+        "content-type": updateMultipart.contentType
+      },
+      payload: updateMultipart.payload
+    });
+    assert.equal(multipartUpdateResponse.statusCode, 200);
+    const multipartUpdated = multipartUpdateResponse.json();
+    assert.equal(multipartUpdated.imageUrl, "https://res.cloudinary.com/demo/image/upload/autopulse/test-2.jpg");
 
     const deleteResponse = await app.inject({
       method: "DELETE",

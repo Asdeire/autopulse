@@ -42,49 +42,15 @@ const adminProductsRoutes: FastifyPluginAsync = async (fastify) => {
   }, getAdminProductByIdController);
 
   fastify.post<{
-    Body: {
-      title: string;
-      description: string;
-      brand: string;
-      price: number;
-      categoryId: number;
-      imageUrl?: string | null;
-      vehicleSpecIds?: number[];
-    };
+    Body: unknown;
   }>("/admin/products", {
     preHandler: [protectAdmin],
-    schema: {
-      body: {
-        type: "object",
-        required: ["title", "description", "brand", "price", "categoryId"],
-        properties: {
-          title: { type: "string", minLength: 1 },
-          description: { type: "string", minLength: 1 },
-          brand: { type: "string", minLength: 1 },
-          price: { type: "number", exclusiveMinimum: 0 },
-          categoryId: { type: "integer", minimum: 1 },
-          imageUrl: { type: ["string", "null"] },
-          vehicleSpecIds: {
-            type: "array",
-            items: { type: "integer", minimum: 1 },
-            uniqueItems: true
-          }
-        }
-      }
-    }
+    schema: {}
   }, createAdminProductController);
 
   fastify.put<{
     Params: { id: number };
-    Body: {
-      title: string;
-      description: string;
-      brand: string;
-      price: number;
-      categoryId: number;
-      imageUrl?: string | null;
-      vehicleSpecIds?: number[];
-    };
+    Body: unknown;
   }>("/admin/products/:id", {
     preHandler: [protectAdmin],
     schema: {
@@ -93,23 +59,6 @@ const adminProductsRoutes: FastifyPluginAsync = async (fastify) => {
         required: ["id"],
         properties: {
           id: { type: "integer", minimum: 1 }
-        }
-      },
-      body: {
-        type: "object",
-        required: ["title", "description", "brand", "price", "categoryId"],
-        properties: {
-          title: { type: "string", minLength: 1 },
-          description: { type: "string", minLength: 1 },
-          brand: { type: "string", minLength: 1 },
-          price: { type: "number", exclusiveMinimum: 0 },
-          categoryId: { type: "integer", minimum: 1 },
-          imageUrl: { type: ["string", "null"] },
-          vehicleSpecIds: {
-            type: "array",
-            items: { type: "integer", minimum: 1 },
-            uniqueItems: true
-          }
         }
       }
     }

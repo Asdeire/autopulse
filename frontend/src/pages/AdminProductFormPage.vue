@@ -25,7 +25,8 @@ const description = ref('')
 const brand = ref('')
 const price = ref('')
 const categoryId = ref('')
-const imageUrl = ref('')
+const existingImageUrl = ref('')
+const imageFile = ref<File | null>(null)
 const selectedVehicleSpecIds = ref<number[]>([])
 const vehicleSearch = ref('')
 
@@ -69,8 +70,14 @@ async function fetchProduct() {
   brand.value = product.brand
   price.value = String(product.price)
   categoryId.value = String(product.categoryId)
-  imageUrl.value = product.imageUrl
+  existingImageUrl.value = product.imageUrl
   selectedVehicleSpecIds.value = toSortedUniqueIds(product.vehicleSpecIds)
+}
+
+function onImageSelected(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0] ?? null
+  imageFile.value = file
 }
 
 async function initialize() {
@@ -112,7 +119,7 @@ async function submitForm() {
       brand: brand.value.trim(),
       price: parsedPrice,
       categoryId: parsedCategoryId,
-      imageUrl: imageUrl.value.trim() ? imageUrl.value.trim() : null,
+      imageFile: imageFile.value,
       vehicleSpecIds: toSortedUniqueIds(selectedVehicleSpecIds.value),
     }
 
@@ -179,11 +186,29 @@ onMounted(initialize)
           </label>
         </div>
 
-        <BaseInput
-          v-model="imageUrl"
-          label="URL фото (необов'язково)"
-          placeholder="Залиште порожнім для дефолтного зображення"
-        />
+        <label class="block">
+          <span class="block text-sm font-semibold text-neutral-800 mb-1">
+            Фото товару (необов'язково)
+          </span>
+          <input
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            class="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-900 shadow-sm transition-all duration-200 outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200"
+            @change="onImageSelected"
+          />
+          <span class="mt-1 block text-xs text-neutral-500">
+            Якщо файл не обрано, буде використано поточне або дефолтне зображення.
+          </span>
+        </label>
+
+        <div v-if="existingImageUrl" class="grid gap-2">
+          <span class="block text-sm font-semibold text-neutral-800">Поточне фото</span>
+          <img
+            :src="existingImageUrl"
+            alt="Поточне фото товару"
+            class="h-32 w-44 rounded border border-neutral-200 object-cover"
+          />
+        </div>
 
         <div class="grid gap-2">
           <div class="text-sm font-semibold text-neutral-800">Сумісність (Vehicle Specs)</div>

@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { Prisma } from "@prisma/client";
+import { UploadedImageInput } from "../../services/cloudinary";
 
 type AdminProductInput = {
   title: string;
@@ -9,6 +10,7 @@ type AdminProductInput = {
   categoryId: number;
   imageUrl?: string | null;
   vehicleSpecIds?: number[];
+  image?: UploadedImageInput | null;
 };
 
 const DEFAULT_PRODUCT_IMAGE = "https://via.placeholder.com/800x600?text=AutoPulse+Product";
@@ -130,6 +132,7 @@ export async function getAdminProductById(fastify: FastifyInstance, id: number) 
 export async function createAdminProduct(fastify: FastifyInstance, input: AdminProductInput) {
   const vehicleSpecIds = normalizeVehicleSpecIds(input.vehicleSpecIds);
   await validateCategoryAndSpecs(fastify, input.categoryId, vehicleSpecIds);
+  const uploadedImageUrl = input.image ? await fastify.imageStorage.uploadProductImage(input.image) : null;
 
   const created = await fastify.prisma.$transaction(async (tx) => {
     const product = await tx.product.create({
@@ -137,7 +140,7 @@ export async function createAdminProduct(fastify: FastifyInstance, input: AdminP
         title: input.title.trim(),
         description: input.description.trim(),
         brand: input.brand.trim(),
-        imageUrl: normalizeImageUrl(input.imageUrl),
+        imageUrl: uploadedImageUrl ?? normalizeImageUrl(input.imageUrl),
         price: input.price,
         categoryId: input.categoryId
       }
@@ -165,7 +168,7 @@ export async function createAdminProduct(fastify: FastifyInstance, input: AdminP
 export async function updateAdminProduct(fastify: FastifyInstance, id: number, input: AdminProductInput) {
   const existing = await fastify.prisma.product.findUnique({
     where: { id },
-    select: { id: true }
+    select: { id: true, imageUrl: true }
   });
 
   if (!existing) {
@@ -174,6 +177,9 @@ export async function updateAdminProduct(fastify: FastifyInstance, id: number, i
 
   const vehicleSpecIds = normalizeVehicleSpecIds(input.vehicleSpecIds);
   await validateCategoryAndSpecs(fastify, input.categoryId, vehicleSpecIds);
+  const uploadedImageUrl = input.image ? await fastify.imageStorage.uploadProductImage(input.image) : null;
+  const nextImageUrl =
+    uploadedImageUrl ?? (input.imageUrl !== undefined ? normalizeImageUrl(input.imageUrl) : existing.imageUrl);
 
   const updated = await fastify.prisma.$transaction(async (tx) => {
     await tx.product.update({
@@ -182,7 +188,7 @@ export async function updateAdminProduct(fastify: FastifyInstance, id: number, i
         title: input.title.trim(),
         description: input.description.trim(),
         brand: input.brand.trim(),
-        imageUrl: normalizeImageUrl(input.imageUrl),
+        imageUrl: nextImageUrl,
         price: input.price,
         categoryId: input.categoryId
       }

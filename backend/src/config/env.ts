@@ -8,6 +8,10 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(8),
   DATABASE_URL: z.string().min(1),
   CORS_ORIGIN: z.string().optional(),
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
+  CLOUDINARY_FOLDER: z.string().optional(),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development")
 });
 

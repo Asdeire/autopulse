@@ -22,5 +22,6 @@ export type AdminProductInput = {
   price: number
   categoryId: number
   imageUrl?: string | null
+  imageFile?: File | null
   vehicleSpecIds: number[]
 }
