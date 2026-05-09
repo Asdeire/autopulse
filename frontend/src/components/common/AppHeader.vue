@@ -79,20 +79,17 @@ onBeforeUnmount(() => {
 <template>
   <header class="bg-neutral-900 text-white">
     <div class="ap-container h-16 flex items-center justify-between gap-4">
-      <RouterLink to="/" class="font-extrabold tracking-wide">
+      <RouterLink to="/" class="font-extrabold tracking-wide text-lg">
         AutoPulse
       </RouterLink>
 
-      <nav class="hidden sm:flex items-center gap-4 text-sm">
+      <nav class="hidden sm:flex items-center gap-6 text-md">
         <RouterLink to="/catalog" class="hover:text-yellow-400 transition-colors">Каталог</RouterLink>
         <RouterLink to="/cart" class="hover:text-yellow-400 transition-colors">
           Кошик<span v-if="cartCount" class="ml-1 text-yellow-400 font-semibold">({{ cartCount }})</span>
         </RouterLink>
         <RouterLink v-if="isAuthed" to="/orders" class="hover:text-yellow-400 transition-colors"
           >Замовлення</RouterLink
-        >
-        <RouterLink v-if="isAdmin" to="/admin/products" class="hover:text-yellow-400 transition-colors"
-          >Адмін панель</RouterLink
         >
       </nav>
 
@@ -142,7 +139,7 @@ onBeforeUnmount(() => {
             aria-haspopup="menu"
             @click="toggleUserMenu"
           >
-            <span class="max-w-40 truncate">{{ userLabel }}</span>
+            <span class="max-w-40 truncate text-md">{{ userLabel }}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -246,9 +243,9 @@ onBeforeUnmount(() => {
                 {{ userLabel }}
               </div>
               <RouterLink to="/profile" class="block" @click="closeMobileMenu">
-                <BaseButton variant="ghost" size="sm" class="w-full justify-center">Профіль</BaseButton>
+                <BaseButton size="sm" class="w-full justify-center">Профіль</BaseButton>
               </RouterLink>
-              <BaseButton variant="ghost" size="sm" class="w-full justify-center" @click="onLogout">
+              <BaseButton variant="danger" size="sm" class="w-full justify-center" @click="onLogout">
                 Вийти
               </BaseButton>
             </div>

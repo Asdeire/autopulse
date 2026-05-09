@@ -23,9 +23,15 @@ async function buildServer() {
     .map((origin) => origin.trim())
     .filter(Boolean);
   const allowedOrigins = new Set([...defaultOrigins, ...configuredOrigins]);
+  const allowAllOrigins = env.NODE_ENV === "development";
 
   await fastify.register(cors, {
     origin(origin, callback) {
+      if (allowAllOrigins) {
+        callback(null, true);
+        return;
+      }
+
       if (!origin) {
         callback(null, true);
         return;

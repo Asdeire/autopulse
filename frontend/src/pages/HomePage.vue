@@ -7,7 +7,7 @@ import BaseCard from '../components/ui/BaseCard.vue'
   <div class="grid gap-6">
     <BaseCard hoverable class="overflow-hidden">
       <div class="grid gap-4 sm:grid-cols-2 items-center">
-        <div>
+        <div class="order-2 sm:order-1">
           <h1 class="text-3xl sm:text-4xl font-extrabold text-neutral-900">
             AutoPulse — автотовари без зайвого шуму
           </h1>
@@ -23,7 +23,7 @@ import BaseCard from '../components/ui/BaseCard.vue'
             </RouterLink>
           </div>
         </div>
-        <div class="hidden sm:block">
+        <div class="order-1 sm:order-2 sm:block">
           <img src="../assets/hero.png" alt="Головний банер AutoPulse" class="w-full rounded-lg shadow-sm" />
         </div>
       </div>
