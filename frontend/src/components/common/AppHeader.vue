@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <header class="bg-neutral-900 text-white">
+  <header class="relative z-50 bg-neutral-900 text-white">
     <div class="ap-container h-16 flex items-center justify-between gap-4">
       <RouterLink to="/" class="font-extrabold tracking-wide text-lg">
         AutoPulse
@@ -128,7 +128,7 @@ onBeforeUnmount(() => {
           </svg>
         </button>
 
-        <RouterLink v-if="!isAuthed" to="/login">
+        <RouterLink v-if="!isAuthed" to="/login" class="hidden sm:block">
           <BaseButton variant="primary" size="sm">Увійти</BaseButton>
         </RouterLink>
         <div v-else ref="userMenuRef" class="relative hidden sm:block">
@@ -139,7 +139,7 @@ onBeforeUnmount(() => {
             aria-haspopup="menu"
             @click="toggleUserMenu"
           >
-            <span class="max-w-40 truncate text-md">{{ userLabel }}</span>
+            <span class="max-w-50 truncate text-md">{{ userLabel }}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
@@ -190,69 +190,103 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <div v-if="isMobileMenuOpen" class="sm:hidden border-t border-neutral-800">
-      <div class="ap-container py-3">
-        <nav class="flex flex-col gap-3 text-sm">
-          <RouterLink
-            to="/catalog"
-            class="hover:text-yellow-400 transition-colors"
-            @click="closeMobileMenu"
-          >
-            Каталог
-          </RouterLink>
+    <Transition
+      enter-active-class="transition-opacity duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <button
+        v-if="isMobileMenuOpen"
+        type="button"
+        class="fixed inset-0 top-16 z-40 bg-black/40 sm:hidden"
+        aria-label="Закрити меню"
+        @click="closeMobileMenu"
+      />
+    </Transition>
 
-          <RouterLink
-            to="/cart"
-            class="hover:text-yellow-400 transition-colors flex items-center gap-2"
-            @click="closeMobileMenu"
-          >
-            <span>Кошик</span>
-            <span v-if="cartCount" class="text-yellow-400 font-semibold">({{ cartCount }})</span>
-          </RouterLink>
-
-          <RouterLink
-            v-if="isAuthed"
-            to="/orders"
-            class="hover:text-yellow-400 transition-colors"
-            @click="closeMobileMenu"
-          >
-            Замовлення
-          </RouterLink>
-
-          <RouterLink
-            v-if="isAdmin"
-            to="/admin/products"
-            class="hover:text-yellow-400 transition-colors"
-            @click="closeMobileMenu"
-          >
-            Адмін панель
-          </RouterLink>
-
-          <div class="pt-2 border-t border-neutral-800">
+    <Transition
+      enter-active-class="transition-all duration-200 ease-out"
+      enter-from-class="-translate-y-2 opacity-0"
+      enter-to-class="translate-y-0 opacity-100"
+      leave-active-class="transition-all duration-150 ease-in"
+      leave-from-class="translate-y-0 opacity-100"
+      leave-to-class="-translate-y-2 opacity-0"
+    >
+      <div
+        v-if="isMobileMenuOpen"
+        class="absolute left-0 right-0 top-full z-50 border-t border-neutral-800 bg-neutral-900 shadow-xl sm:hidden"
+      >
+        <div class="ap-container py-3">
+          <nav class="flex flex-col gap-3 text-sm">
             <RouterLink
-              v-if="!isAuthed"
-              to="/login"
-              class="block"
+              to="/catalog"
+              class="hover:text-yellow-400 transition-colors"
               @click="closeMobileMenu"
             >
-              <BaseButton variant="primary" size="sm" class="w-full justify-center">Увійти</BaseButton>
+              Каталог
             </RouterLink>
 
-            <div v-else class="grid gap-2">
-              <div class="rounded-md bg-neutral-800 px-3 py-2 text-sm text-neutral-200">
-                {{ userLabel }}
-              </div>
-              <RouterLink to="/profile" class="block" @click="closeMobileMenu">
-                <BaseButton size="sm" class="w-full justify-center">Профіль</BaseButton>
+            <RouterLink
+              to="/cart"
+              class="hover:text-yellow-400 transition-colors flex items-center gap-2"
+              @click="closeMobileMenu"
+            >
+              <span>Кошик</span>
+              <span v-if="cartCount" class="text-yellow-400 font-semibold">({{ cartCount }})</span>
+            </RouterLink>
+
+            <RouterLink
+              v-if="isAuthed"
+              to="/orders"
+              class="hover:text-yellow-400 transition-colors"
+              @click="closeMobileMenu"
+            >
+              Замовлення
+            </RouterLink>
+
+            <RouterLink
+              v-if="isAdmin"
+              to="/admin/products"
+              class="hover:text-yellow-400 transition-colors"
+              @click="closeMobileMenu"
+            >
+              Адмін панель
+            </RouterLink>
+
+            <div class="pt-2 border-t border-neutral-800">
+              <RouterLink
+                v-if="!isAuthed"
+                to="/login"
+                class="block"
+                @click="closeMobileMenu"
+              >
+                <BaseButton variant="primary" size="sm" class="w-full justify-center">Увійти</BaseButton>
               </RouterLink>
-              <BaseButton variant="danger" size="sm" class="w-full justify-center" @click="onLogout">
-                Вийти
-              </BaseButton>
+
+              <div v-else class="grid gap-2">
+                <div class="rounded-md bg-neutral-800 px-3 py-2 text-sm text-neutral-200">
+                  {{ userLabel }}
+                </div>
+                <RouterLink to="/profile" class="block" @click="closeMobileMenu">
+                  <BaseButton size="sm" class="w-full justify-center !bg-red-200">Профіль</BaseButton>
+                </RouterLink>
+                <BaseButton
+                  variant="danger"
+                  size="sm"
+                  class="w-full justify-center !bg-red-500"
+                  @click="onLogout"
+                >
+                  Вийти
+                </BaseButton>
+              </div>
             </div>
-          </div>
-        </nav>
+          </nav>
+        </div>
       </div>
-    </div>
+    </Transition>
   </header>
 </template>
 

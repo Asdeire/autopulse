@@ -43,7 +43,11 @@ export const useAuthStore = defineStore('auth', {
         const res = await authApi.register(input)
         this.setAuth({ token: res.token, userEmail: res.user.email, role: res.user.role })
       } catch (e) {
-        throw new Error(getApiErrorInfo(e).message)
+        const apiError = getApiErrorInfo(e)
+        if (apiError.statusCode === 409) {
+          throw new Error('Користувач з такою електронною поштою вже існує')
+        }
+        throw new Error(apiError.message)
       }
     },
     logout() {

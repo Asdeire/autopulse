@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, useAttrs } from 'vue'
+
+defineOptions({
+  inheritAttrs: false,
+})
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
 type Size = 'sm' | 'md'
@@ -21,6 +25,12 @@ const props = withDefaults(
   },
 )
 
+const attrs = useAttrs()
+const buttonAttrs = computed(() => {
+  const { class: _class, ...rest } = attrs
+  return rest
+})
+
 const classes = computed(() => {
   const base =
     'inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2'
@@ -39,12 +49,12 @@ const classes = computed(() => {
           ? 'bg-red-600 hover:bg-red-700 text-white shadow-sm'
           : 'bg-transparent hover:bg-neutral-100 text-neutral-900'
 
-  return [base, size, variant, disabled].filter(Boolean).join(' ')
+  return [base, size, variant, disabled, attrs.class]
 })
 </script>
 
 <template>
-  <button :type="type" :disabled="disabled || loading" :class="classes">
+  <button v-bind="buttonAttrs" :type="type" :disabled="disabled || loading" :class="classes">
     <span
       v-if="loading"
       class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-neutral-900/30 border-t-neutral-900"
