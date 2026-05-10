@@ -78,7 +78,7 @@ onBeforeUnmount(() => {
 
 <template>
   <header class="relative z-50 bg-neutral-900 text-white">
-    <div class="ap-container h-16 flex items-center justify-between gap-4">
+     <div class="ap-container h-16 flex items-center justify-between gap-4">
       <RouterLink to="/" class="font-extrabold tracking-wide text-lg">
         AutoPulse
       </RouterLink>

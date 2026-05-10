@@ -1,194 +1,242 @@
 [
   {
-    "title": "Toyota Corolla Oil Filter OF-101",
-    "description": "Spin-on oil filter for regular service intervals.",
+    "title": "Масляний фільтр MANN-FILTER W 68/3",
+    "description": "Накручуваний масляний фільтр для регулярного технічного обслуговування. Забезпечує надійне очищення моторної оливи.",
     "brand": "MANN-FILTER",
-    "imageUrl": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/mann-w68-3.png",
     "price": 349,
-    "categoryName": "Filters"
+    "categoryName": "Фільтри"
   },
   {
-    "title": "Volkswagen Golf Air Filter AF-220",
-    "description": "Engine air filter for improved intake cleanliness.",
+    "title": "Повітряний фільтр Bosch 1 457 433 323",
+    "description": "Фільтр двигуна для покращеного очищення впускного повітря та захисту циліндрів від пилу.",
     "brand": "Bosch",
-    "imageUrl": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/bosch-1457433323.jpg",
     "price": 499,
-    "categoryName": "Filters"
+    "categoryName": "Фільтри"
   },
   {
-    "title": "BMW 3 Series Cabin Filter CF-332",
-    "description": "Cabin pollen filter with activated carbon media.",
+    "title": "Фільтр салону MAHLE LAK 879",
+    "description": "Салонний фільтр з активованим вугіллям. Захищає від пилку, вихлопних газів та неприємних запахів.",
     "brand": "MAHLE",
-    "imageUrl": "https://images.unsplash.com/photo-1625047509168-a7026f36de04?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/mahle-lak-879.jpg",
     "price": 579,
-    "categoryName": "Filters"
+    "categoryName": "Фільтри"
   },
   {
-    "title": "Audi A4 Fuel Filter FF-145",
-    "description": "Fuel filter cartridge for gasoline engines.",
-    "brand": "UFI",
-    "imageUrl": "https://images.unsplash.com/photo-1590511687524-7457c8f0f4f2?auto=format&fit=crop&w=1200&q=80",
-    "price": 629,
-    "categoryName": "Filters"
+    "title": "Паливний фільтр Knecht KL 156/3",
+    "description": "Високоякісний паливний фільтр для бензинових двигунів. Захищає систему впорскування від забруднень.",
+    "brand": "Knecht",
+    "imageUrl": "/images/products/knecht-kl156-3.jpg",
+    "price": 680,
+    "categoryName": "Фільтри"
   },
   {
-    "title": "Ford Focus 5W-30 Synthetic Oil 4L",
-    "description": "Full synthetic engine oil for daily driving.",
+    "title": "Моторна олива Castrol EDGE 5W-30 LL 4л",
+    "description": "Повністю синтетична моторна олива для сучасних двигунів. Забезпечує максимальну продуктивність.",
     "brand": "Castrol",
-    "imageUrl": "https://images.unsplash.com/photo-1621551122354-e96737d64b2f?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/castrol-edge-5w30-4l.jpg",
     "price": 1349,
-    "categoryName": "Engine Oil"
+    "categoryName": "Моторні оливи"
   },
   {
-    "title": "Honda Civic 0W-20 Synthetic Oil 4L",
-    "description": "Low-friction synthetic oil for modern engines.",
-    "brand": "Mobil",
-    "imageUrl": "https://images.unsplash.com/photo-1608424524166-0f1a7aef4c5d?auto=format&fit=crop&w=1200&q=80",
-    "price": 1499,
-    "categoryName": "Engine Oil"
+    "title": "Моторна олива Castrol Magnatec 10W-40 1л",
+    "description": "Напівсинтетична олива для щоденного використання. Знижує знос під час пуску.",
+    "brand": "Castrol",
+    "imageUrl": "/images/products/castrol-magnatec-10w40-1l.jpg",
+    "price": 450,
+    "categoryName": "Моторні оливи"
   },
   {
-    "title": "Skoda Octavia 5W-40 Synthetic Oil 4L",
-    "description": "High-temperature stable synthetic engine oil.",
-    "brand": "Liqui Moly",
-    "imageUrl": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80",
-    "price": 1599,
-    "categoryName": "Engine Oil"
-  },
-  {
-    "title": "Mercedes C-Class 5W-30 LongLife Oil 5L",
-    "description": "Long drain interval synthetic oil for premium vehicles.",
-    "brand": "Shell",
-    "imageUrl": "https://images.unsplash.com/photo-1629236712170-f4b9b20f286d?auto=format&fit=crop&w=1200&q=80",
-    "price": 1899,
-    "categoryName": "Engine Oil"
-  },
-  {
-    "title": "Front Brake Pads BP-410 Ceramic",
-    "description": "Low-noise ceramic front brake pads set.",
+    "title": "Гальмівні колодки передні Brembo P 85 075",
+    "description": "Комплект керамічних передніх гальмівних колодок. Низький рівень шуму та пилу.",
     "brand": "Brembo",
-    "imageUrl": "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/brembo-p85075.jpg",
     "price": 1799,
-    "categoryName": "Brake System"
+    "categoryName": "Гальмівна система"
   },
   {
-    "title": "Rear Brake Pads BP-278",
-    "description": "Reliable rear brake pads for urban driving.",
+    "title": "Гальмівні колодки задні TRW GDB1330",
+    "description": "Надійні задні гальмівні колодки для комфортного міського водіння.",
     "brand": "TRW",
-    "imageUrl": "https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/trw-gdb1330.jpg",
     "price": 1399,
-    "categoryName": "Brake System"
+    "categoryName": "Гальмівна система"
   },
   {
-    "title": "Front Brake Disc BD-330 Ventilated",
-    "description": "Ventilated brake discs with anti-corrosion coating.",
+    "title": "Гальмівний диск передній ATE 24.0125-0158.1",
+    "description": "Вентильований гальмівний диск з антикорозійним покриттям високовуглецевого сплаву.",
     "brand": "ATE",
-    "imageUrl": "https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/ate-240125-01581.jpg",
     "price": 2699,
-    "categoryName": "Brake System"
+    "categoryName": "Гальмівна система"
   },
   {
-    "title": "Rear Brake Disc BD-225 Solid",
-    "description": "Solid rear brake disc for balanced braking.",
-    "brand": "Zimmermann",
-    "imageUrl": "https://images.unsplash.com/photo-1599256635934-f288f16f6f3d?auto=format&fit=crop&w=1200&q=80",
-    "price": 2099,
-    "categoryName": "Brake System"
-  },
-  {
-    "title": "Spark Plug Iridium SP-11",
-    "description": "Iridium spark plug with long service life.",
+    "title": "Свічка запалювання NGK Iridium IX BKR6EIX",
+    "description": "Іридієва свічка запалювання для стабільної роботи та тривалого терміну служби.",
     "brand": "NGK",
-    "imageUrl": "https://images.unsplash.com/photo-1486754735734-325b5831c3ad?auto=format&fit=crop&w=1200&q=80",
-    "price": 289,
-    "categoryName": "Electronics"
+    "imageUrl": "/images/products/ngk-bkr6eix.jpg",
+    "price": 420,
+    "categoryName": "Електроніка"
   },
   {
-    "title": "Spark Plug Platinum SP-09",
-    "description": "Platinum spark plug for stable ignition.",
-    "brand": "Denso",
-    "imageUrl": "https://images.unsplash.com/photo-1630416439313-8f4a4f94a6b8?auto=format&fit=crop&w=1200&q=80",
-    "price": 259,
-    "categoryName": "Electronics"
-  },
-  {
-    "title": "AGM Battery 70Ah 760A",
-    "description": "Maintenance-free AGM battery for start-stop systems.",
+    "title": "Акумулятор Varta Silver Dynamic AGM 70Ah 760A",
+    "description": "Акумулятор AGM для автомобілів з системами старт-стоп та високим енергоспоживанням.",
     "brand": "Varta",
-    "imageUrl": "https://images.unsplash.com/photo-1558423853-bb35f25733d8?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/varta-agm-70ah.jpg",
     "price": 5699,
-    "categoryName": "Electronics"
+    "categoryName": "Електроніка"
   },
   {
-    "title": "EFB Battery 65Ah 650A",
-    "description": "Enhanced flooded battery for modern compact cars.",
-    "brand": "Bosch",
-    "imageUrl": "https://images.unsplash.com/photo-1574789784570-0fbd8e6f4fdf?auto=format&fit=crop&w=1200&q=80",
-    "price": 4599,
-    "categoryName": "Electronics"
-  },
-  {
-    "title": "Timing Belt Kit TBK-204",
-    "description": "Timing belt kit with tensioner and idler rollers.",
-    "brand": "Gates",
-    "imageUrl": "https://images.unsplash.com/photo-1517949908118-72149b3f2a68?auto=format&fit=crop&w=1200&q=80",
-    "price": 3299,
-    "categoryName": "Engine Parts"
-  },
-  {
-    "title": "Water Pump WP-560",
-    "description": "Engine water pump with high durability impeller.",
-    "brand": "SKF",
-    "imageUrl": "https://images.unsplash.com/photo-1526726538690-5cbf956ae2fd?auto=format&fit=crop&w=1200&q=80",
-    "price": 1899,
-    "categoryName": "Engine Parts"
-  },
-  {
-    "title": "Serpentine Belt SB-6PK1120",
-    "description": "Accessory drive belt for alternator and AC compressor.",
+    "title": "Поліклиновий ремінь Contitech 6PK1195",
+    "description": "Ремінь приводу навісного обладнання (генератор, кондиціонер, ГУР).",
     "brand": "Contitech",
-    "imageUrl": "https://images.unsplash.com/photo-1551830820-330a71b99659?auto=format&fit=crop&w=1200&q=80",
-    "price": 699,
-    "categoryName": "Engine Parts"
+    "imageUrl": "/images/products/contitech-6pk1195.jpg",
+    "price": 430,
+    "categoryName": "Деталі двигуна"
   },
   {
-    "title": "Thermostat Assembly TH-92C",
-    "description": "Coolant thermostat assembly with gasket.",
-    "brand": "Wahler",
-    "imageUrl": "https://images.unsplash.com/photo-1581093588401-16ec6d6df1f1?auto=format&fit=crop&w=1200&q=80",
-    "price": 899,
-    "categoryName": "Engine Parts"
-  },
-  {
-    "title": "Front Shock Absorber SA-Front-01",
-    "description": "Gas-filled front shock absorber for stable handling.",
+    "title": "Амортизатор передній Sachs 313 472",
+    "description": "Газонаповнений передній амортизатор для ідеальної керованості та комфорту.",
     "brand": "Sachs",
-    "imageUrl": "https://images.unsplash.com/photo-1593941707882-a5bac6861d75?auto=format&fit=crop&w=1200&q=80",
+    "imageUrl": "/images/products/sachs-313472.jpg",
     "price": 2399,
-    "categoryName": "Suspension"
+    "categoryName": "Підвіска"
   },
   {
-    "title": "Rear Shock Absorber SA-Rear-02",
-    "description": "Rear shock absorber tuned for comfort.",
+    "title": "Радіатор охолодження Nissens 65201A",
+    "description": "Алюмінієвий радіатор двигуна. Гарантує ефективне тепловідведення в екстремальних умовах.",
+    "brand": "Nissens",
+    "imageUrl": "/images/products/nissens-65201a.jpg",
+    "price": 3100,
+    "categoryName": "Охолодження та опалення"
+  },
+  {
+    "title": "Термостат Wahler 3141.87D",
+    "description": "Термостат з корпусом та прокладкою. Відкриття при 87°C для швидкого прогріву.",
+    "brand": "Wahler",
+    "imageUrl": "/images/products/wahler-3141-87d.jpg",
+    "price": 680,
+    "categoryName": "Охолодження та опалення"
+  },
+  {
+    "title": "Водяна помпа SKF VKPC 81402",
+    "description": "Водяний насос охолодження двигуна з високоміцною крильчаткою.",
+    "brand": "SKF",
+    "imageUrl": "/images/products/skf-vkpc-81402.jpg",
+    "price": 1899,
+    "categoryName": "Деталі двигуна"
+  },
+  {
+    "title": "Комплект ГРМ Gates K015631XS",
+    "description": "Комплект ременя ГРМ з роликом натягувача та напрямними роликами.",
+    "brand": "Gates",
+    "imageUrl": "/images/products/gates-k015631xs.jpg",
+    "price": 3299,
+    "categoryName": "Деталі двигуна"
+  },
+  {
+    "title": "Прокладка ГБЦ Victor Reinz 61-34250-00",
+    "description": "Металопакетна прокладка головки блоку циліндрів. Забезпечує надійну герметизацію.",
+    "brand": "Victor Reinz",
+    "imageUrl": "/images/products/victor-reinz-61-34250-00.jpg",
+    "price": 950,
+    "categoryName": "Деталі двигуна"
+  },
+  {
+    "title": "Амортизатор задній KYB 344459 Excel-G",
+    "description": "Двотрубний газовий амортизатор для відновлення заводських характеристик підвіски.",
     "brand": "KYB",
-    "imageUrl": "https://images.unsplash.com/photo-1603569283847-aa295f0d016a?auto=format&fit=crop&w=1200&q=80",
-    "price": 1999,
-    "categoryName": "Suspension"
+    "imageUrl": "/images/products/kyb-344459.jpg",
+    "price": 1850,
+    "categoryName": "Підвіска"
   },
   {
-    "title": "Stabilizer Link SL-305",
-    "description": "Anti-roll bar link for improved cornering stability.",
-    "brand": "Lemforder",
-    "imageUrl": "https://images.unsplash.com/photo-1575487426366-25f95df6f0f7?auto=format&fit=crop&w=1200&q=80",
+    "title": "Тяга стабілізатора Lemförder 26774 01",
+    "description": "Стійка стабілізатора для покращення стабільності автомобіля в поворотах.",
+    "brand": "Lemförder",
+    "imageUrl": "/images/products/lemforder-26774-01.jpg",
     "price": 749,
-    "categoryName": "Suspension"
+    "categoryName": "Підвіска"
   },
   {
-    "title": "Control Arm CA-Left-210",
-    "description": "Front lower left control arm with silent blocks.",
+    "title": "Важіль підвіски Febi Bilstein 21463",
+    "description": "Передній нижній важіль у зборі з сайлентблоками та кульовою опорою.",
     "brand": "Febi Bilstein",
-    "imageUrl": "https://images.unsplash.com/photo-1601268588577-319223ba08cf?auto=format&fit=crop&w=1200&q=80",
-    "price": 2599,
-    "categoryName": "Suspension"
+    "imageUrl": "/images/products/febi-21463.jpg",
+    "price": 2450,
+    "categoryName": "Підвіска"
+  },
+  {
+    "title": "Комплект зчеплення LuK 624 3158 00",
+    "description": "Комплект зчеплення (кошик, диск, вижимний підшипник) для плавного рушання.",
+    "brand": "LuK",
+    "imageUrl": "/images/products/luk-624-3158-00.jpg",
+    "price": 6500,
+    "categoryName": "Трансмісія"
+  },
+  {
+    "title": "Двомасовий маховик Sachs 2294 000 113",
+    "description": "Маховик для гасіння крутильних коливань у трансмісії сучасних дизельних авто.",
+    "brand": "Sachs",
+    "imageUrl": "/images/products/sachs-2294-000-113.jpg",
+    "price": 14200,
+    "categoryName": "Трансмісія"
+  },
+  {
+    "title": "Рульова тяга TRW JAR931",
+    "description": "Тяга рульової рейки для точного та безпечного управління автомобілем.",
+    "brand": "TRW",
+    "imageUrl": "/images/products/trw-jar931.jpg",
+    "price": 850,
+    "categoryName": "Рульове управління"
+  },
+  {
+    "title": "Наконечник рульової тяги Lemförder 25506 01",
+    "description": "Рульовий наконечник преміум якості. Високий ресурс шарнірного з'єднання.",
+    "brand": "Lemförder",
+    "imageUrl": "/images/products/lemforder-25506-01.jpg",
+    "price": 920,
+    "categoryName": "Рульове управління"
+  },
+  {
+    "title": "Автолампа галогенна Osram Night Breaker 200 H7",
+    "description": "Галогенна лампа головного світла H7. До 200% більше яскравості на дорозі.",
+    "brand": "Osram",
+    "imageUrl": "/images/products/osram-h7-nightbreaker.jpg",
+    "price": 850,
+    "categoryName": "Освітлення"
+  },
+  {
+    "title": "Ксенонова лампа Philips Vision D2S",
+    "description": "Оригінальна ксенонова лампа D2S для штатного лінзованого світла (4300K).",
+    "brand": "Philips",
+    "imageUrl": "/images/products/philips-d2s-vision.jpg",
+    "price": 1650,
+    "categoryName": "Освітлення"
+  },
+  {
+    "title": "Трансмісійна олива Motul Motylgear 75W-90 1л",
+    "description": "Напівсинтетична олива для механічних коробок передач. Полегшує перемикання на холоді.",
+    "brand": "Motul",
+    "imageUrl": "/images/products/motul-motylgear-75w90.jpg",
+    "price": 540,
+    "categoryName": "Трансмісійні оливи"
+  },
+  {
+    "title": "Гальмівна рідина Motul DOT 5.1 0.5л",
+    "description": "Синтетична гальмівна рідина з високою температурою кипіння для систем ABS.",
+    "brand": "Motul",
+    "imageUrl": "/images/products/motul-dot51-05l.jpg",
+    "price": 350,
+    "categoryName": "Гальмівна система"
+  },
+  {
+    "title": "Котушка запалювання Bosch 0 986 221 023",
+    "description": "Високовольтна котушка запалювання для стабільного іскроутворення.",
+    "brand": "Bosch",
+    "imageUrl": "/images/products/bosch-0986221023.jpg",
+    "price": 1150,
+    "categoryName": "Електроніка"
   }
 ]

@@ -23,6 +23,7 @@ async function run() {
   }
 
   let linked = 0;
+  const linkedSpecIds = new Set<number>();
   for (const product of products) {
     const category = product.category.name.toLowerCase();
     const maxLinks =
@@ -53,10 +54,38 @@ async function run() {
         }
       });
       linked += 1;
+      linkedSpecIds.add(vehicleSpecId);
     }
   }
 
-  console.log(`[generate-demo-fitment] done: ${linked} compatibility links`);
+  let backfilledSpecs = 0;
+  for (const spec of specs) {
+    if (linkedSpecIds.has(spec.id)) {
+      continue;
+    }
+
+    const fallbackProduct = products[hash(spec.normalizedName) % products.length];
+    await prisma.productCompatibility.upsert({
+      where: {
+        productId_vehicleSpecId: {
+          productId: fallbackProduct.id,
+          vehicleSpecId: spec.id
+        }
+      },
+      update: { source: "DEMO_GENERATOR" },
+      create: {
+        productId: fallbackProduct.id,
+        vehicleSpecId: spec.id,
+        source: "DEMO_GENERATOR"
+      }
+    });
+    linked += 1;
+    backfilledSpecs += 1;
+  }
+
+  console.log(
+    `[generate-demo-fitment] done: ${linked} compatibility links (backfilled specs: ${backfilledSpecs})`
+  );
 }
 
 run()

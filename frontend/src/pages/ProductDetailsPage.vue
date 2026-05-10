@@ -42,7 +42,6 @@ function addToCart() {
     },
     1,
   )
-  router.push('/cart')
 }
 
 watch(id, load)
@@ -125,12 +124,12 @@ onMounted(load)
         >
           <BaseCard hoverable class="h-full cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
             <div class="grid gap-3">
-              <div class="relative overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100">
+              <div class="relative overflow-hidden rounded-lg border border-neutral-200">
                 <img
                   v-if="p.imageUrl"
                   :src="p.imageUrl"
                   :alt="p.title"
-                  class="h-40 w-full object-cover"
+                  class="h-60 w-full object-contain"
                 />
                 <div v-else class="grid h-40 place-items-center text-sm text-neutral-400">
                   Немає фото
