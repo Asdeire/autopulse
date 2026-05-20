@@ -23,7 +23,9 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 COPY prisma ./prisma
-RUN npm ci --include=dev && npx prisma generate && npm cache clean --force
+RUN npm ci --include=dev --verbose
+RUN npx prisma generate
+RUN npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
 COPY data ./data
