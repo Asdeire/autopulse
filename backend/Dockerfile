@@ -26,6 +26,7 @@ COPY prisma ./prisma
 RUN npm ci --include=dev && npx prisma generate && npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
+COPY data ./data
 COPY docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x ./docker-entrypoint.sh
 
