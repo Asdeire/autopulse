@@ -197,7 +197,7 @@ onMounted(async () => {
     </EmptyState>
 
     <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <RouterLink v-for="p in catalog.products" :key="p.id" :to="`/products/${p.id}`" class="block h-full">
+      <RouterLink v-for="p in catalog.products" :key="p.id" :to="`/products/${p.id}`" class="block h-full min-w-0">
         <BaseCard hoverable class="h-full cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
           <div class="grid gap-3">
             <div class="relative overflow-hidden rounded-lg border border-neutral-200">

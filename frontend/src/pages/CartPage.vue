@@ -36,7 +36,7 @@ function onCheckout() {
 
     <div v-else class="grid gap-4 lg:grid-cols-3">
       <div class="grid gap-3 lg:col-span-2">
-        <BaseCard v-for="item in items" :key="item.productId" class="max-h-[100px]">
+        <BaseCard v-for="item in items" :key="item.productId" class="min-w-0">
           <div class="flex items-start justify-between gap-4">
             <div class="min-w-0">
               <div class="font-bold text-neutral-900 truncate">{{ item.name }}</div>

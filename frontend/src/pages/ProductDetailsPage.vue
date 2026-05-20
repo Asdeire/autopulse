@@ -31,6 +31,9 @@ async function load() {
   recommended.value = recs
 }
 
+const isAdded = ref(false)
+let addTimeout: ReturnType<typeof setTimeout> | undefined
+
 function addToCart() {
   if (!product.value) return
   cart.addToCart(
@@ -42,6 +45,12 @@ function addToCart() {
     },
     1,
   )
+  
+  isAdded.value = true
+  if (addTimeout) clearTimeout(addTimeout)
+  addTimeout = setTimeout(() => {
+    isAdded.value = false
+  }, 2000)
 }
 
 watch(id, load)
@@ -103,8 +112,12 @@ onMounted(load)
                 <div class="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-base font-semibold text-neutral-700">
                   {{ product.price }} ₴
                 </div>
-                <BaseButton variant="primary" class="justify-center" @click="addToCart">
-                  Додати в кошик
+                <BaseButton 
+                  :variant="isAdded ? 'secondary' : 'primary'" 
+                  class="justify-center min-w-[160px] transition-colors" 
+                  @click="addToCart"
+                >
+                  {{ isAdded ? '✓ Додано' : 'Додати в кошик' }}
                 </BaseButton>
               </div>
             </div>
@@ -120,7 +133,7 @@ onMounted(load)
           v-for="p in recommended"
           :key="p.id"
           :to="`/products/${p.id}`"
-          class="block h-full"
+          class="block h-full min-w-0"
         >
           <BaseCard hoverable class="h-full cursor-pointer transition-transform duration-150 hover:-translate-y-0.5">
             <div class="grid gap-3">
