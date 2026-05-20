@@ -3,7 +3,7 @@ FROM node:20-bookworm-slim AS builder
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm config set fetch-retry-maxtimeout 600000 && npm config set fetch-retries 5 && npm ci --verbose
+RUN npm ci
 
 COPY . .
 ARG VITE_API_BASE_URL

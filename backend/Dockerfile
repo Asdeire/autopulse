@@ -5,7 +5,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm config set fetch-retry-maxtimeout 600000 && npm config set fetch-retries 5 && npm ci --verbose
+RUN npm ci
 
 COPY prisma ./prisma
 RUN npx prisma generate
@@ -23,7 +23,9 @@ RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 COPY prisma ./prisma
-COPY --from=builder /app/node_modules ./node_modules
+RUN npm ci --include=dev --verbose
+RUN npx prisma generate
+RUN npm cache clean --force
 
 COPY --from=builder /app/dist ./dist
 COPY data ./data
